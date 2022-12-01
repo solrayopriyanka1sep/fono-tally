@@ -1,0 +1,31 @@
+
+http://103.212.143.188:8080/
+
+teamsolrayo99@gmail.com
+Admin@123
+
+
+http://localhost:5000/api/AccountGroups/GetAllAccountGroups/43
+
+POST http://localhost:5000/api/AccountGroups/AddUpdate
+
+
+
+
+
+CREATE TABLE TallyConfig ( FronoCompanyId int NOT NULL PRIMARY KEY , TallycompanyName VARCHAR(50) NOT NULL , LedgerMasters bit NOT NULL, StockMasters bit NOT NULL, 
+Locations bit NOT NULL, CostCenters bit NOT NULL, CostCategories bit NOT NULL, SalesAndReturns bit NOT NULL, PurchaseAndReturns bit NOT NULL,
+ReceiptsAndPayments bit NOT NULL, Journals bit NOT NULL, SalesOrders bit NOT NULL, PurchaseOrders bit NOT NULL );
+
+
+INSERT INTO TallyConfig ( FronoCompanyId , TallycompanyName , LedgerMasters , StockMasters , Locations , CostCenters , CostCategories , SalesAndReturns , PurchaseAndReturns ,
+ReceiptsAndPayments , Journals , SalesOrders , PurchaseOrders ) VALUES ( 43, 'Test Company 1', 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 ) ;
+
+UPDATE TallyConfig SET TallycompanyName = @TallycompanyName, LedgerMasters = @LedgerMasters, StockMasters = @StockMasters, Locations = @Locations, CostCenters = @CostCenters, CostCategories = @CostCategories, SalesAndReturns = @SalesAndReturns, PurchaseAndReturns = @PurchaseAndReturns,
+ReceiptsAndPayments = @ReceiptsAndPayments, Journals = @Journals, SalesOrders = @SalesOrders, PurchaseOrders = @PurchaseOrders WHERE FronoCompanyId = @FronoCompanyId
+
+
+
+https://code-maze.com/using-dapper-with-asp-net-core-web-api/
+
+

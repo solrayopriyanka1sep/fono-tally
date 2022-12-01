@@ -1,0 +1,93 @@
+<div style="width: 100%; background-color: cadetblue; text-align: center; padding-top: 5px; padding-bottom: 5px; margin-bottom: 10px;" >
+    <span style="font-size: 20px;">Data Import Export</span>
+</div>
+<div style="padding-top: 5px; padding-left: 30px; text-align: left;">
+    <button (click)="backToHome()" >Back to Home</button>&nbsp;&nbsp;
+</div>
+
+<div class="warpper">
+  <input class="radio" id="one" name="group" type="radio" checked>
+  <input class="radio" id="two" name="group" type="radio">
+  <div class="tabs">
+  <label class="tab" id="one-tab" for="one">Masters Data</label>
+  <label class="tab" id="two-tab" for="two">Transactions Data</label>
+</div>
+<div class="panels">
+    <div class="panel" id="one-panel">
+        <div class="panel-title" style="margin-bottom: 10px;">Import Masters Data</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="text-align: center; width: 15%; ">Master Type</th>
+                        <th style="text-align: center; width: 19%;">Master Name</th>
+                        <th style="text-align: center; width: 10%;">Action</th>
+                        <th style="text-align: center; width: 10%;">Select</th>
+                        <th style="text-align: center; width: 10%;">Status</th>
+                        <th style="text-align: center; width: 30%;">Message</th>
+                    </tr>
+                </thead>
+                 <tbody>
+                    <tr *ngFor="let maprow of TallyData.MastersStageData; let i = index">
+                        <td class="filterable-cell" style="width: 15%;" >{{maprow.MasterType}}</td>
+                        <td class="filterable-cell" style="width: 20%;">{{maprow.MasterName}}</td>
+                        <td class="filterable-cell" style="width: 10%;">
+                                <select [(ngModel)]="maprow.Action" >
+                                    <option *ngFor="let ActionName of ActionList" name="ActionName" [value]="ActionName"   >
+                                        {{ActionName}}
+                                    </option>
+                                </select>                    
+                        </td>
+                        <td class="filterable-cell" style="width: 10%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
+                        <td class="filterable-cell" style="width: 10%;">:{{maprow.Status}} </td>
+                        <td class="filterable-cell" style="width: 30%;">:{{maprow.Message}} </td>
+                    </tr>
+                </tbody>                
+            </table>
+
+            <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 0">
+                <button >Export to Tally</button>&nbsp;&nbsp;
+            </div>
+            <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 1">
+                <button (click)="SaveMasterstoFrono()">Save to Frono</button>&nbsp;&nbsp;
+            </div>
+        </div>
+    <div class="panel" id="two-panel">
+        <div class="panel-title" style="margin-bottom: 10px;">Import Transactions Data</div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th style="text-align: center; width: 15%; ">Master Type</th>
+                    <th style="text-align: center; width: 19%;">Master Name</th>
+                    <th style="text-align: center; width: 15%;">Action</th>
+                    <th style="text-align: center; width: 15%;" >Select</th>
+                    <th style="text-align: center; width: 15%;">Status</th>
+                    <th style="text-align: center; width: 15%;">Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let maprow of TallyData.MastersStageData; let i = index">
+                        <td class="filterable-cell" style="width: 15%;" >{{maprow.MasterType}}</td>
+                        <td class="filterable-cell" style="width: 20%;">{{maprow.MasterName}}</td>
+                        <td class="filterable-cell" style="width: 15%;">
+                            <select [(ngModel)]="maprow.Action" >
+                                <option *ngFor="let ActionName of ActionList" name="ActionName" [value]="ActionName"   >
+                                    {{ActionName}}
+                                </option>
+                            </select>                    
+                        </td>
+                        <td class="filterable-cell" style="width: 15%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
+                        <td class="filterable-cell" style="width: 15%;">:{{maprow.Status}} </td>
+                        <td class="filterable-cell" style="width: 15%;">:{{maprow.Message}} </td>
+                    </tr>
+                </tbody>                
+            </table>
+
+        <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 0">
+            <button (click)="TallyExport()">Export to Tally</button>&nbsp;&nbsp;
+        </div>
+        <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 1">
+            <button >Save to Frono</button>&nbsp;&nbsp;
+        </div>
+    </div>
+  </div>
+</div>

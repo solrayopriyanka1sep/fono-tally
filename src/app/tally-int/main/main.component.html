@@ -1,0 +1,45 @@
+<div class="centerDiv">
+    <div style="text-align: right;">
+        <button (click)="routeTo('tally-integration/config')">
+            <span>Configuration</span>
+        </button>&nbsp;&nbsp;
+        <button (click)="routeTo('tally-integration/mapping')" *ngIf="connected" >
+            <span>Mapping</span>
+        </button>
+    </div>
+    <br/>
+
+
+    <p style="text-align: center;">
+        <label for="fname">Tally URL : </label>
+        <input type="text" [(ngModel)]="tallyURL" required>
+    </p>
+    <p style="text-align: center;">   
+        <label for="fname">Company Name in Tally : </label>
+        <input type="text" [(ngModel)]="tallyCompanyName" required>
+    </p>
+
+    <p style="text-align: center;" *ngIf="!connected">   
+        <button (click)="tallyConnect()">Connect To Tally</button>
+    </p>
+
+    <p style="text-align: center; background-color: lightgreen;" *ngIf="connected">   
+        Connected to Tally
+    </p>
+
+    <p style="text-align: center; background-color: lightcoral" *ngIf="connectionError">   
+        {{connectionErrorMsg}}
+    </p>
+
+    
+    <p style="text-align: center;" *ngIf="connected">   
+        <button (click)="dataImport()">Import Data From Tally</button>&nbsp;&nbsp;
+        <button (click)="dataEmport()">Export Data to Tally</button>
+    </p>
+
+    <p style="text-align: center;" *ngIf="connected">   
+        <button (click)="CreateGroup()">Create Group</button>
+    </p>
+
+
+</div>

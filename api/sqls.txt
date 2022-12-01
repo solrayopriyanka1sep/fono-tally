@@ -1,0 +1,31 @@
+
+
+use ERP ;
+
+select * from CompanyProfile
+select * from TallyConfig
+
+
+
+
+select * from AccountGroups
+select * from GLAccount
+select * from GLAccountGSTLedgers
+
+
+
+select * from BrokerMaster
+
+select * from CustomerMaster
+
+
+
+
+CREATE TABLE TallyConfig ( FronoCompanyId int NOT NULL PRIMARY KEY , TallycompanyName VARCHAR(50) NOT NULL , LedgerMasters bit NOT NULL, StockMasters bit NOT NULL, 
+Locations bit NOT NULL, CostCenters bit NOT NULL, CostCategories bit NOT NULL, SalesAndReturns bit NOT NULL, PurchaseAndReturns bit NOT NULL,
+ReceiptsAndPayments bit NOT NULL, Journals bit NOT NULL, SalesOrders bit NOT NULL, PurchaseOrders bit NOT NULL );
+
+INSERT INTO TallyConfig ( FronoCompanyId , TallycompanyName , LedgerMasters , StockMasters , Locations , CostCenters , CostCategories , SalesAndReturns , PurchaseAndReturns ,
+ReceiptsAndPayments , Journals , SalesOrders , PurchaseOrders ) VALUES ( 43, 'Test Company 1', 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 ) ;
+
+

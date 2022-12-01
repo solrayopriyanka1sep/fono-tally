@@ -1,0 +1,55 @@
+<div class="centerDiv">
+    <div style="width: 100%; background-color: cadetblue; text-align: center; padding-top: 5px; padding-bottom: 5px;" >
+        <span style="font-size: 20px;">Configuration</span>
+    </div>
+
+    <div style="padding-top: 20px;">
+        <form>           
+            <table >
+                <tr>
+                    <th style="text-align: center;">Integrate Masters</th>
+                    <th style="text-align: center;">Integrate Transactions</th>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" [checked]="TallyData.ConfigOptions.ledgerMasters" (change)="TallyData.ConfigOptions.ledgerMasters = !TallyData.ConfigOptions.ledgerMasters"/><label> Legdger Groups and Ledgers</label>
+                    </td>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.salesAndReturns" (change)="TallyData.ConfigOptions.salesAndReturns = !TallyData.ConfigOptions.salesAndReturns"/><label> Sales and Sales Returns</label></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.stockMasters" (change)="TallyData.ConfigOptions.stockMasters = !TallyData.ConfigOptions.stockMasters"/><label> Stock Groups and Stock Items</label></td>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.purchaseAndReturns" (change)="TallyData.ConfigOptions.purchaseAndReturns = !TallyData.ConfigOptions.purchaseAndReturns"/><label> Purchase and Purchase Returns</label></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.locations" (change)="TallyData.ConfigOptions.locations = !TallyData.ConfigOptions.locations"/><label> Locations / Godowns</label></td>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.receiptsAndPayments" (change)="TallyData.ConfigOptions.receiptsAndPayments = !TallyData.ConfigOptions.receiptsAndPayments"/><label> Receipts and Payments</label></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.costCenters" (change)="TallyData.ConfigOptions.costCenters = !TallyData.ConfigOptions.costCenters"/><label> Cost Centers</label></td>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.journals" (change)="TallyData.ConfigOptions.journals = !TallyData.ConfigOptions.journals"/><label> Journals</label></td>
+                </tr>
+                <tr>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.costCategories" (change)="TallyData.ConfigOptions.costCategories = !TallyData.ConfigOptions.costCategories"/><label> Cost Categories</label></td>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.salesOrders" (change)="TallyData.ConfigOptions.salesOrders = !TallyData.ConfigOptions.salesOrders"/><label> Salse Orders</label></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="checkbox" [checked]="TallyData.ConfigOptions.purchaseOrders" (change)="TallyData.ConfigOptions.purchaseOrders = !TallyData.ConfigOptions.purchaseOrders"/><label> Purchase Orders</label></td>
+                </tr>
+          </table>
+
+          <p style="text-align: center;">
+            <input type="checkbox" [checked]="TallyData.ConfigOptions.twoStep" (change)="TallyData.ConfigOptions.twoStep = !TallyData.ConfigOptions.twoStep"/><label> Two Step Import Export</label>
+          </p>
+          <p style="text-align: center;color: red;">         
+                {{ResponseMessage }}
+          </p>
+        </form>        
+    </div>
+    <div style="text-align: center;">
+        <button (click)="saveConfig()">Save</button>&nbsp;&nbsp;
+        <button (click)="cancel()">Cancel</button>
+    </div>
+</div>
+
+

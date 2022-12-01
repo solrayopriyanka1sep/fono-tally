@@ -1,0 +1,79 @@
+
+
+https://www.youtube.com/watch?v=v9U1T2eIjoU
+https://angular.io/guide/creating-libraries
+https://stackoverflow.com/questions/44945766/use-external-javascript-library-in-angular-application/44946104#44946104
+
+
+
+https://www.bennadel.com/blog/3444-proof-of-concept-using-axios-as-your-http-client-in-angular-6-0-0.htm
+https://stackoverflow.com/questions/44441761/send-a-soap-request-over-http-with-angular
+https://stackblitz.com/edit/angular-soap-test?file=src%2Fapp%2Fsoap.service.ts
+
+
+Create an App
+  Create TallyIntegrationModule
+     Components
+     ----------
+     1) Mainpage
+        1a) Error Log
+        1b) Data with status
+     2) Configuration
+     3) mappings
+ 
+    
+TypeScript
+https://www.typescriptlang.org/docs/handbook/2/objects.html
+
+
+
+Create Angular App
+------------------
+ng new frono-tally
+cd frono-tally
+ng serve --open
+
+
+Create Module
+------------------
+ng g module tally-int --routing
+
+add components to module
+------------------------
+ng g c tally-int/main
+ng g c tally-int/config
+ng g c tally-int/mapping
+ng g c tally-int/stagging
+
+
+Register the module in the app.module.ts file
+1) add the line import {tallyIntModule} from './tally-int/tally-int.module'
+2) add the name as "tallyIntModule" in the Imports section
+
+
+Export the module tally-int module
+Open the tally-int.module.ts and add the following code after imports :[CommonModule,
+    TallyIntRoutingModule] 
+  exports : [
+    MainComponent,
+    ConfigComponent,
+    MappingComponent,
+    StaggingComponent
+ ]
+
+Add routers
+
+Add Services to Module
+1) Create Services folder
+
+
+
+Import axios and fast-xml-parser
+npm install axios --save
+npm install fast-xml-parser --save
+
+
+
+
+
+
