@@ -106,11 +106,46 @@ export interface IInventoryEntries extends Array<IInventoryEntry>{}
 //    [index:number]:IInventoryEntry 
 //} 
 
+/*
+export class LedgerInfo {
+    LedName : string = "";
+    LedGroup : string = "";
+    Id?:string;
+    AliasName? : string;
+    OpBal? : number;
+    Add1? : string;
+    Add2? : string;
+    Add3? : string;
+    Add4? : string;
+    Add5? : string;
+    PINCode? : string;
+    State? : string;
+    Country? : string;
+    Email? : string;
+    ContactPerson? : string;
+    PANNo? : string;
+    GSTINNo? : string;
+    GSTApplicable? :boolean;
+    GSTRegistrationType? : string;
+    TaxType?  : TAXABILITY;
+    GSTType? : string;
+    GSTDuty? : number;
+    GSTSupplyType? : string;
+    RoundingMethod? : string;
+    Roundinglimit? : number;
+    IsBillwise? : boolean;
+    CostCenterOn? : boolean;
+    IsInterestOn? : boolean;
+    AffectStock? : boolean;
+    SAC_HSNcode? : string;
+}
 
+*/
 
 export interface LedgerInfo {
     LedName : string;
     LedGroup : string;
+    Id?:string;
     AliasName? : string;
     OpBal? : number;
     Add1? : string;

@@ -2,6 +2,7 @@ using fronotallyapi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace FronoTallyAPI.models
 {
   public interface IConfigDataRepository
@@ -14,6 +15,16 @@ namespace FronoTallyAPI.models
     public Task<BaseDtos> DeleteCompanyConfig(int id);
 
   }
+
+  public interface IunitsMasterRepository
+  {
+    public Task<IEnumerable<unitsMaster>> GetunitsMaster();
+    public Task<BaseDtos> GetSingleUnit(int id);
+    public Task<BaseDtos> AddUpdteUnitsMaster(int id, unitsMaster unitData);
+    public Task<BaseDtos> DeleteUnitMaster(int id);
+
+  }
+
 
   public sealed class BaseDtos
   {
@@ -36,6 +47,5 @@ namespace FronoTallyAPI.models
     }
 
   }
-
 
 }

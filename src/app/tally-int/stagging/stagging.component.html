@@ -21,7 +21,7 @@
                         <th style="text-align: center; width: 15%; ">Master Type</th>
                         <th style="text-align: center; width: 19%;">Master Name</th>
                         <th style="text-align: center; width: 10%;">Action</th>
-                        <th style="text-align: center; width: 10%;">Select</th>
+                        <th style="text-align: center; width: 10%;" (click)="toggleSelect()">Select</th>
                         <th style="text-align: center; width: 10%;">Status</th>
                         <th style="text-align: center; width: 30%;">Message</th>
                     </tr>
@@ -45,7 +45,7 @@
             </table>
 
             <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 0">
-                <button >Export to Tally</button>&nbsp;&nbsp;
+                <button (click)="ExportMasterstoTally()">Export to Tally</button>&nbsp;&nbsp;
             </div>
             <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 1">
                 <button (click)="SaveMasterstoFrono()">Save to Frono</button>&nbsp;&nbsp;
@@ -56,8 +56,8 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th style="text-align: center; width: 15%; ">Master Type</th>
-                    <th style="text-align: center; width: 19%;">Master Name</th>
+                    <th style="text-align: center; width: 15%; ">Transaction Type</th>
+                    <th style="text-align: center; width: 19%;">Voucher Type</th>
                     <th style="text-align: center; width: 15%;">Action</th>
                     <th style="text-align: center; width: 15%;" >Select</th>
                     <th style="text-align: center; width: 15%;">Status</th>

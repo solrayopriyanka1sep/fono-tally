@@ -1,4 +1,5 @@
 using System;
+
 namespace fronotallyapi.Models
 {
   public class masterStage
@@ -41,10 +42,8 @@ namespace fronotallyapi.Models
     public bool IsInterestOn { get; set; }
     public bool AffectsStock { get; set; }
     public string PrimaryGroup { get; set; }
-
     public decimal OpeningBalance { get; set; }
     public string DrCr { get; set; }
-
 
   }
 }

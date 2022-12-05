@@ -210,7 +210,8 @@ export class  TallyMastersXML {
                         <COLLECTION ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No" NAME="AVSGroups">
                             <TYPE>Groups</TYPE>                                                 
                             <NATIVEMETHOD>Parent</NATIVEMETHOD>
-                            <NATIVEMETHOD>IsRevenue</NATIVEMETHOD> 
+                            <NATIVEMETHOD>IsRevenue</NATIVEMETHOD>
+                            <NATIVEMETHOD>GUID</NATIVEMETHOD>
                             <COMPUTE>GroupName : $Name[1].Name</COMPUTE>
                             <COMPUTE>Alias : $$alias:ledger</COMPUTE>
                         </COLLECTION>
@@ -240,17 +241,23 @@ export class  TallyMastersXML {
       return strRtnVal
     }
 
-    GroupCreateXML(GrpName:string, TallyGroup:TALLYGROUP=TALLYGROUP.Non_Tally_Group , GroupUnder:string = "") {
-//    GroupCreateXML(GrpName:string, TallyGroup:TALLYGROUP = TALLYGROUP.Non_Tally_Group, GroupUnder:string = "") {
+    GroupCreateModifyXML(GrpName:string,  TallyGroup:TALLYGROUP=TALLYGROUP.Non_Tally_Group , ModifiedName:string ="", GroupUnder:string = "" , GrpId:string ="", GrpAlias:string="" ) {
+      ModifiedName = ModifiedName != "" ? ModifiedName : GrpName
+      ModifiedName = this.XmlName(ModifiedName)
       GrpName = this.XmlName(GrpName)
+      
       GroupUnder = this.XmlName(GroupUnder)
       GroupUnder = (TallyGroup != TALLYGROUP.Non_Tally_Group) ? GroupUnder = TallyGroup  : this.XmlName(GroupUnder) 
+      const guid = GrpId != "" ? "<GUID>AVS-Frono-Group-" + GrpId + "</GUID>" : ""
+      const alias = GrpAlias != "" ? `<NAME>${GrpAlias}</NAME>` : ""
 
       const XMLstr:string = this.XMLHeadImportMasters + 
           `<TALLYMESSAGE xmlns:UDF="TallyUDF">
             <GROUP NAME="${GrpName}" >
+              ${guid}
               <NAME.LIST>
-                <NAME>${GrpName}</NAME>
+                <NAME>${ModifiedName}</NAME>
+                ${alias}
               </NAME.LIST>
               <PARENT>${GroupUnder}</PARENT>
             </GROUP>
@@ -258,7 +265,7 @@ export class  TallyMastersXML {
       return XMLstr
     }
 
-
+/*
     GroupModifyXML(GrpOldName:string, GrpNewName:string = "", TallyGroup:TALLYGROUP = TALLYGROUP.Non_Tally_Group, GroupUnder:string = ""):string {
       //Blank Parameter Means No Changes
       GrpOldName = this.XmlName(GrpOldName)
@@ -279,6 +286,7 @@ export class  TallyMastersXML {
 
       return XMLstr
     }
+*/
 
     GroupDeleteXML(GrpName:string):string {
       GrpName = this.XmlName(GrpName)
@@ -547,15 +555,17 @@ export class  TallyMastersXML {
         if(LedInfo.GSTType ) LedInfo.GSTType = this.XmlName(LedInfo.GSTType)
         if(LedInfo.GSTSupplyType )  LedInfo.GSTSupplyType = this.XmlName(LedInfo.GSTSupplyType)
         if(LedInfo.SAC_HSNcode ) LedInfo.SAC_HSNcode = this.XmlName(LedInfo.SAC_HSNcode)
-
-
+        
+        const guid = LedInfo.Id != "" ? "<GUID>AVS-Frono-Accounts-" + LedInfo.Id + "</GUID>" : ""
         let XMLstr = this.XMLHeadImportMasters + 
                 `<TALLYMESSAGE xmlns:UDF="TallyUDF">
-                  <LEDGER NAME="${LedInfo.LedName}">              
+                  <LEDGER NAME="${LedInfo.LedName}">
+                    ${guid}
                     <NAME.LIST>`
               
         XMLstr = XMLstr + `<NAME>` + ( isModify && ModifiedName != ""   ? ModifiedName : LedInfo.LedName) + `</NAME>`
-        if( !(!LedInfo.AliasName) || LedInfo.AliasName != "" )  XMLstr = XMLstr + `<NAME>${LedInfo.AliasName}</NAME>`
+        if( (!LedInfo.AliasName || LedInfo.AliasName == "" ) == false )  XMLstr = XMLstr + `<NAME>${LedInfo.AliasName}</NAME>`
+
         XMLstr = XMLstr + "</NAME.LIST>"
 
         const completeAddress = (!LedInfo.Add1 ? "" : LedInfo.Add1) +
@@ -661,7 +671,7 @@ export class  TallyMastersXML {
             XMLstr = XMLstr + "</LEDGER>"
             XMLstr = XMLstr + "      </TALLYMESSAGE>"
             XMLstr = XMLstr + this.XMLBottomImport
-          
+      
       return XMLstr
     }
     
@@ -781,10 +791,13 @@ export class  TallyMastersXML {
     }
     
     CreateModifyUOMXML(UOMid:string, UOMName:string, isModify:boolean=false, ModifiedId:string="",  GSTUOM:string = "" ):string {
+      GSTUOM = GSTUOM == "" ?  UOMid.toUpperCase() + "-" + UOMName.toUpperCase() : GSTUOM
+      GSTUOM = this.XmlName(GSTUOM) 
+      
       UOMid = this.XmlName(UOMid)
       UOMName = this.XmlName(UOMName)
       ModifiedId = isModify && ModifiedId != "" ? ModifiedId : UOMid
-
+      
       const XMLstr:string = this.XMLHeadImportMasters + 
               `<TALLYMESSAGE xmlns:UDF="TallyUDF">
               <UNIT NAME="${UOMid}" RESERVEDNAME="">

@@ -70,7 +70,7 @@ export class MainComponent implements OnInit {
 
 
   CreateGroup(){
-    this.TallyAPI.CreateGroup("Nitin Test", TALLYGROUP.Fixed_Assets, "").subscribe({
+    this.TallyAPI.CreateModifyGroup("Nitin Test", TALLYGROUP.Fixed_Assets, "").subscribe({
         next: (res:any) => {
             //console.log(res.data)
             console.log(res)

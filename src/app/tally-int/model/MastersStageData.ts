@@ -6,10 +6,11 @@ export class MastersStageData {
     FronoCompanyId:number = 0
     MasterType:string = "Ledgers"
     Action: string = ""
-    Id:number = 0
+    Id:number = 0     //Can be used as alias
     MasterName:string = ""
     ParentId:Number = 0
     ParentName:string = ""
+    Alias:string = ""
     Address1?:string = ""
     Address2?:string = ""
     Address3?:string = ""
@@ -42,9 +43,14 @@ export class MastersStageData {
 
     OpeningBalance:number = 0
     DrCr:string = "DR"
+
+    Description:string = ""
+    GstItemType:string="Goods"
  
     isSelected:boolean = false 
     Status:string = "" 
     Message:string = ""
+
+
 }
 

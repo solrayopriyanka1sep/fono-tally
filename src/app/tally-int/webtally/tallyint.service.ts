@@ -131,13 +131,14 @@ export class TallyIntService {
     })  
   });
 
-  CreateGroup(GrpName:string, TallyGroup:TALLYGROUP=TALLYGROUP.Non_Tally_Group ,  GroupUnder:string = "") {
+  CreateModifyGroup(GrpName:string, TallyGroup:TALLYGROUP=TALLYGROUP.Non_Tally_Group ,  ModifiedName:string ="", GroupUnder:string = "" , GrpId:string ="", GrpAlias:string=""  ) {
     return new Observable<any>((observer) => {
       if(this.companyMatched == false ) {          
         const rtnVal = { Error : true, Message : "Company opened in Tally does not match with current Company", data : "" }
         observer.error(rtnVal)
       }
-      const StrTallyRequest = this.TXMLMast.GroupCreateXML(GrpName, TallyGroup, GroupUnder)
+
+      const StrTallyRequest = this.TXMLMast.GroupCreateModifyXML(GrpName, TallyGroup, ModifiedName, GroupUnder, GrpId, GrpAlias)
       const XMLP = new XMLParser()
 
       this.http.post(this.tallyURL, StrTallyRequest, { responseType:'text' }).subscribe({
@@ -148,39 +149,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
-            //console.log(rtnVal);
-            observer.next(rtnVal)
-          }
-        },
-        error: error => {
-          const rtnVal = { Error : true, Message : error.message , data : "" }
-          //console.error('There was an error!', error);
-          observer.error(rtnVal)
-        }      
-      })  
-    });
-  }
-
-  ModifyGroup(GrpOldName:string, GrpNewName:string = "", TallyGroup:TALLYGROUP = TALLYGROUP.Non_Tally_Group, GroupUnder:string = "") {
-    return new Observable<any>((observer) => {
-      if(this.companyMatched == false ) {          
-        const rtnVal = { Error : true, Message : "Company opened in Tally does not match with current Company", data : "" }
-        observer.error(rtnVal)
-      }
-      const StrTallyRequest = this.TXMLMast.GroupModifyXML(GrpOldName, GrpNewName, TallyGroup,  GroupUnder  )
-
-      const XMLP = new XMLParser()
-
-      this.http.post(this.tallyURL, StrTallyRequest, { responseType:'text' }).subscribe({
-        next: res => {
-          let jObj:any = XMLP.parse(res)
-          if(jObj.RESPONSE.LINEERROR) {
-            //console.log(jObj.ENVELOPE.BODY.DATA.LINEERROR)          
-            const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
-            observer.next(rtnVal)
-          } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data Updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -212,7 +181,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data Deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -261,7 +230,7 @@ export class TallyIntService {
     })  
   });
 
-  CreateModifyLedger(LedgerInfo:LedgerInfo, isModify:boolean=false, ModifiedName:string = "" ) {
+  CreateModifyLedger(LedgerInfo:LedgerInfo, isModify:boolean=false, ModifiedName:string = "" ) {    
     return new Observable<any>((observer) => {
       if(this.companyMatched == false ) {          
         const rtnVal = { Error : true, Message : "Company opened in Tally does not match with current Company", data : "" }
@@ -278,7 +247,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data Updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -310,7 +279,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data Deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -376,7 +345,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data Updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -408,7 +377,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -473,7 +442,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -505,7 +474,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -572,7 +541,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -604,7 +573,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -671,7 +640,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -703,7 +672,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -768,7 +737,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -799,7 +768,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -875,7 +844,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -906,7 +875,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -973,7 +942,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -1004,7 +973,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -1070,7 +1039,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data updated" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -1101,7 +1070,7 @@ export class TallyIntService {
             const rtnVal ={ Error : true, Message : jObj.RESPONSE.LINEERROR , data : jObj.RESPONSE.ERRORS }
             observer.next(rtnVal)
           } else {
-            const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.RESPONSE }
+            const rtnVal = { Error : false, Message : "Data deleted" , data : jObj.RESPONSE }
             //console.log(rtnVal);
             observer.next(rtnVal)
           }
@@ -1145,7 +1114,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
@@ -1183,7 +1152,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
@@ -1220,7 +1189,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
@@ -1257,7 +1226,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
@@ -1294,7 +1263,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
@@ -1331,7 +1300,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
@@ -1368,7 +1337,7 @@ export class TallyIntService {
             if(jObj.RESPONSE.CANCELLED != 0 ) responseStr = "Cancelled " + jObj.RESPONSE.CANCELLED + " Vouchers."
             if(jObj.RESPONSE.ERRORS != 0 ) responseStr = jObj.RESPONSE.ERRORS + " Vouchers in Error."
 
-            const rtnVal = { Error : false, Message : "Data retrived" , data : responseStr }
+            const rtnVal = { Error : false, Message : "Data updated" , data : responseStr }
             observer.next(rtnVal)
           }
         },
