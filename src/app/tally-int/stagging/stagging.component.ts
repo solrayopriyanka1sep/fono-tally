@@ -4,8 +4,9 @@ import { TallyDataService } from '../webtally/tallydata.service';
 import { TallyIntService } from '../webtally/tallyint.service';
 import { FronoIntService } from '../webtally/fronoint.service';
 import { MastersStageData } from '../model/MastersStageData';
-import {  TALLYGROUP , LedgerInfo } from '../webtally/tallyInterfaces';
+import {  TALLYGROUP , LedgerInfo, ItemInfo } from '../webtally/tallyInterfaces';
 import { Observable } from 'rxjs';
+import * as e from 'cors';
 
 @Component({
   selector: 'app-stagging',
@@ -16,6 +17,9 @@ export class StaggingComponent implements OnInit {
   TallyData:TallyDataService
   MasterTypes:string[] = []
   ActionList:string[] = []
+  UOMList:any[] = []
+  stockGroupsList:any[] = []
+  stockCategoriesList:any[] = []
 
   constructor(private TallyAPI:TallyIntService, private FronoAPI:FronoIntService, private TallyDataSrv:TallyDataService,  private route:Router) { 
     this.TallyData = this.TallyDataSrv
@@ -30,6 +34,91 @@ export class StaggingComponent implements OnInit {
     this.TallyData.MastersStageData  = []
     //Collect frono data to be exported to Tally
     if(this.TallyData.ExportImport == 0){
+
+
+      this.FronoAPI.getUOM().subscribe({
+        next: (res:any) => {
+            if(res.messageText == "") {
+              this.UOMList = res.data.data
+              res.data.data.forEach( (item:any) => {
+                  let mData = new MastersStageData()
+                  mData.Action = "Create"
+                  mData.MasterType = "Units"
+                  mData.MasterName = item.unitShortName
+                  mData.Description = item.unitName
+                  mData.Id = item.unitId
+                  mData.Address1 = item.address1
+                  this.TallyData.MastersStageData.push(mData) 
+              });              
+            } else {
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.error( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          },
+//          complete() {
+//            setTimeout(() => {
+//              console.log('sleep');        
+//            }, 5000);                   
+//          },
+      })          
+
+
+      this.FronoAPI.getStockGroups().subscribe({
+        next: (res:any) => {
+            if(res.messageText == "") {
+              this.stockGroupsList = res.data
+              res.data.forEach( (item:any) => {
+                  let mData = new MastersStageData()
+                  mData.Action = "Create"
+                  mData.MasterType = "Stock Groups"
+                  mData.MasterName = item.departmentName
+                  mData.Id = item.departmentId                   
+                  this.TallyData.MastersStageData.push(mData) 
+              });
+            } else {
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.error( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+
+
+      this.FronoAPI.getStockCategories().subscribe({
+        next: (res:any) => {
+            if(res.messageText == "") {
+              this.stockCategoriesList = res.data
+              res.data.forEach( (item:any) => {
+                  let mData = new MastersStageData()
+                  mData.Action = "Create"
+                  mData.MasterType = "Stock Categories"
+                  mData.MasterName = item.categoryName
+                  mData.Id = item.id
+                  mData.ParentName = item.parent == "Primary" ? "" : item.parent
+                  this.TallyData.MastersStageData.push(mData) 
+              });
+            } else {
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.error( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+      
+
       this.FronoAPI.getGroups().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
@@ -112,18 +201,20 @@ export class StaggingComponent implements OnInit {
           }                
       })          
 
-      
-      this.FronoAPI.getUOM().subscribe({
+
+      this.FronoAPI.getGodowns().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
               res.data.forEach( (item:any) => {
                   let mData = new MastersStageData()
                   mData.Action = "Create"
-                  mData.MasterType = "Units"
-                  mData.MasterName = item.unitShortName
-                  mData.Description = item.unitName
-                  //mData.ParentName = item.contactType == 1 ? "Sundry Debtors" : "Sundry Creditors"
-                  mData.Id = item.unitId                   
+                  mData.MasterType = "Godowns"
+                  mData.MasterName = item.warehouseName
+                  const parentInfo:any[] = res.data.filter((el:any) => el.warehouseId == item.parentWarehouseId )
+                  const parentName = parentInfo.length == 0 ? "" : parentInfo[0].warehouseName
+                  //mData.ParentName = item.parentWarehouseId == 0 ? "Primary" : parentName
+                  mData.ParentName = parentName
+                  mData.Id = item.warehouseId                   
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
@@ -137,11 +228,11 @@ export class StaggingComponent implements OnInit {
               //dataRow.Message = error.messageText
           }                
       })          
-
-
-
-      this.FronoAPI.getStockItems().subscribe({
+      
+      
+      this.FronoAPI.getStockItems().subscribe({        
         next: (res:any) => {
+            // if(this.UOMList.length == 0) {          }
             if(res.messageText == "") {
               res.data.forEach( (item:any) => {
                   let mData = new MastersStageData()
@@ -150,12 +241,20 @@ export class StaggingComponent implements OnInit {
                   mData.MasterName = item.itemName
                   mData.Alias = item.itemCode
                   mData.Description = item.itemDescription
-                  //mData.ParentName = item.contactType == 1 ? "Sundry Debtors" : "Sundry Creditors"
-
+//                  const UOMInfo:any[] = this.UOMList.filter((el:any) => el.saUnitId == item.unitId )
+//                  const UOMName = UOMInfo.length == 0 ? "" : UOMInfo[0].unitShortName
+//                  mData.UOM = UOMName
+                  mData.UOM = item.unitShortName
+                  mData.ParentName = item.departmentName
+                  mData.category = item.subCategoryName
                   mData.Id = item.itemId 
                   mData.GstItemType = item.itemType
-
-                  
+                  mData.TaxType = item.taxability
+                  mData.HSNCode = item.hsnCode
+                  mData.IGST = item.igst
+                  mData.CGST = item.cgst
+                  mData.SGST = item.sgst
+                  mData.CESS = item.cess             
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
@@ -171,9 +270,7 @@ export class StaggingComponent implements OnInit {
       })          
 
 
-
     }
-
   }
 
   async SaveMasterstoFrono() {    
@@ -212,7 +309,7 @@ export class StaggingComponent implements OnInit {
     for (const dataRow of this.TallyData.MastersStageData) {
       if (dataRow.MasterType == "Ledger Groups"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) { 
         this.TallyAPI.CreateModifyGroup(dataRow.MasterName, TALLYGROUP.Non_Tally_Group,"" ,dataRow.ParentName, dataRow.Id, "" ).subscribe({
-          next: (res:any) => {
+          next: (res:any) => {            
               if(res.Error == false) {
                 dataRow.Status = "Success" 
                 dataRow.Message = "Created " + res.data.CREATED + ", Modified " + res.data.ALTERED
@@ -277,8 +374,8 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      if (dataRow.isSelected && dataRow.MasterType == "Units"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
-        this.TallyAPI.CreateModifyUOM(dataRow.MasterName, dataRow.Description, false, "" ).subscribe({
+      if (dataRow.isSelected && dataRow.MasterType == "Godowns"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
+        this.TallyAPI.CreateModifyLocation(dataRow.MasterName, false,"", dataRow.ParentName, "" , dataRow.Address1 ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
                 dataRow.Status = "Success" 
@@ -296,6 +393,79 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
+      if (dataRow.MasterType == "Godowns"  && dataRow.Action == "Delete"  ) { 
+        this.TallyAPI.DeleteLocation( dataRow.MasterName ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Deleted " + res.data.DELETED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }              
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            }                
+        })
+      }
+
+      if (dataRow.isSelected && dataRow.MasterType == "Units"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
+        this.TallyAPI.CreateModifyUOM( dataRow.MasterName, dataRow.Description, false, "" ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Created " + res.data.CREATED + ", Modified " + res.data.ALTERED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            },
+        })      
+      }
+
+      
+
+      if (dataRow.isSelected && dataRow.MasterType == "Stock Items"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
+        let itemData:ItemInfo = {          
+          ItemName : dataRow.MasterName,
+          Alias : dataRow.Alias,
+          ItemDescription : dataRow.Description,
+          BaseUOM : dataRow.UOM,
+          Parent : dataRow.ParentName,
+          GSTApplicable: (dataRow.TaxType == "" ? false : true ),
+          Category: dataRow.category,
+          HSC_SAC : dataRow.hsnCode,
+          SGST_Rate : dataRow.SGST,
+          CGST_Rate : dataRow.CGST,
+          IGST_Rate : dataRow.IGST
+        }
+
+        
+        this.TallyAPI.CreateModifyStockItem( itemData, false, ""  ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Created " + res.data.CREATED + ", Modified " + res.data.ALTERED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            },
+        })      
+      }
 
       
       //console.log(dataRow);

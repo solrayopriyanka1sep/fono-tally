@@ -1,9 +1,9 @@
-using fronotallyapi.Models;
+using Fronotallyapi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-namespace FronoTallyAPI.models
+namespace Fronotallyapi.Models
 {
   public interface IConfigDataRepository
   {
@@ -18,12 +18,24 @@ namespace FronoTallyAPI.models
 
   public interface IunitsMasterRepository
   {
-    public Task<IEnumerable<unitsMaster>> GetunitsMaster();
+    public Task<BaseDtos> GetunitsMaster();
     public Task<BaseDtos> GetSingleUnit(int id);
     public Task<BaseDtos> AddUpdteUnitsMaster(int id, unitsMaster unitData);
     public Task<BaseDtos> DeleteUnitMaster(int id);
 
   }
+
+
+  public interface ImasterDataRepository
+  {
+    public Task<BaseDtos> GetStockGroups(int companyId);
+
+    public Task<BaseDtos> GetStockCategories(int companyId);
+
+    public Task<BaseDtos> GetStockItems(int companyId);
+  }
+
+
 
 
   public sealed class BaseDtos

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace fronotallyapi.Models
+namespace Fronotallyapi.Models
 {
   public class LedgerEntry
   {

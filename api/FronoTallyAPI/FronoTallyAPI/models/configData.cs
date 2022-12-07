@@ -1,7 +1,7 @@
 using System;
 
 
-namespace fronotallyapi.Models
+namespace Fronotallyapi.Models
 {
   public class configData
   {

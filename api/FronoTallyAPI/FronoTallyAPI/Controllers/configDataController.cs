@@ -1,4 +1,3 @@
-using fronotallyapi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -6,7 +5,7 @@ using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using FronoTallyAPI.models;
+using Fronotallyapi.Models;
 using System.Threading.Tasks;
 using System;
 

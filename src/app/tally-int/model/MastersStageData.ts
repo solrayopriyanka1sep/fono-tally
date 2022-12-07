@@ -25,6 +25,8 @@ export class MastersStageData {
     Contact?:string = ""
     IncomeTaxNumber?:string = ""
     PartyGSTIN?:string = ""
+
+    category?:string = ""
     GSTApplicable?:boolean = false
 
     GSTRegistrationType?:string = ""
@@ -34,18 +36,24 @@ export class MastersStageData {
     GSTTypeOfSupply?:string = ""
     RoundingMethod?:string = ""
     RoundingLimit?:number = 0
+    HSNCode?:string =""
+    IGST?:number = 0
+    CGST?:number = 0
+    SGST?:number = 0
+    CESS?:number = 0
 
     IsBillwiseOn?:boolean = false
     IsCostCentresOn?:boolean = false
     IsInterestOn?:boolean = false
     AffectsStock?:boolean = false
-    PrimaryGroup:string = ""
+    PrimaryGroup?:string = ""
 
-    OpeningBalance:number = 0
-    DrCr:string = "DR"
+    OpeningBalance?:number = 0
+    DrCr?:string = "DR"
 
-    Description:string = ""
-    GstItemType:string="Goods"
+    UOM?:string=""
+    Description?:string = ""
+    GstItemType?:string="Goods"
  
     isSelected:boolean = false 
     Status:string = "" 

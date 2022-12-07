@@ -1,7 +1,7 @@
 using Dapper;
-using fronotallyapi.Models;
+//using fronotallyapi.Models;
 using FronoTallyAPI.context;
-using FronoTallyAPI.models;
+using Fronotallyapi.Models;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,3 @@
-using fronotallyapi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -6,7 +5,7 @@ using System.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using FronoTallyAPI.models;
+using Fronotallyapi.Models;
 using System.Threading.Tasks;
 using System;
 
@@ -33,10 +32,11 @@ namespace fronotallyapi.Controllers
     {
       try
       {
-        var units = await _unitsRepo.GetunitsMaster();
+        var resp = await _unitsRepo.GetunitsMaster();
         //return Ok(units);
-        return CreateObject.GetBaseDtos(units, 200, "");
+        return CreateObject.GetBaseDtos(resp, 200, "");
       }
+
       catch (Exception ex)
       {
         //log error
@@ -45,7 +45,7 @@ namespace fronotallyapi.Controllers
     }
 
 
-    
+
     [HttpPost("{id}")]
     public async Task<BaseDtos> AddUpdteUnitsMaster(int id, unitsMaster unitData)
     {
@@ -65,7 +65,7 @@ namespace fronotallyapi.Controllers
     }
 
 
-        
+
     [HttpDelete("{id}")]
     public async Task<BaseDtos> DeleteUnitMaster(int id)
     {
@@ -85,6 +85,9 @@ namespace fronotallyapi.Controllers
         return CreateObject.GetBaseDtos(500, 500, ex.Message);
       }
     }
+
+    
+
 
   }
 }

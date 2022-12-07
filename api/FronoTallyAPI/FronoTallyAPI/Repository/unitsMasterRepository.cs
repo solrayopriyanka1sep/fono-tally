@@ -1,7 +1,7 @@
 using Dapper;
-using fronotallyapi.Models;
+using Fronotallyapi.Models;
 using FronoTallyAPI.context;
-using FronoTallyAPI.models;
+using Microsoft.OpenApi.Any;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -21,15 +21,16 @@ namespace FronoTallyAPI.Repository
       _context = context;
     }
 
-    public async Task<IEnumerable<unitsMaster>> GetunitsMaster()
+    public async Task<BaseDtos> GetunitsMaster()
     {
       var query = "SELECT * FROM SAUnitMaster";
 
       using (var connection = _context.CreateConnection())
       {
         var allunits = await connection.QueryAsync<unitsMaster>(query);
-        
-        return allunits.ToList();
+
+        var unitsList = allunits.ToList();
+        return CreateObject.GetBaseDtos(unitsList, 200, "");
       }
     }
 
@@ -38,10 +39,19 @@ namespace FronoTallyAPI.Repository
     {
       var query = "SELECT * FROM SAUnitMaster WHERE SAUnitId = @Id";
 
-      using (var connection = _context.CreateConnection())
+      try
       {
-        var unitData = await connection.QueryAsync<unitsMaster>(query);
-        return CreateObject.GetBaseDtos(unitData, 200, "");
+          using (var connection = _context.CreateConnection())
+        {
+          var unitData = await connection.QueryAsync<unitsMaster>(query);
+          return CreateObject.GetBaseDtos(unitData, 200, "");
+        }
+      }
+      catch (Exception ex)
+      {
+        //Console.WriteLine(ex.ToString());
+        //throw;
+        return CreateObject.GetBaseDtos(ex, 500, "500");
       }
     }
 
@@ -93,8 +103,9 @@ namespace FronoTallyAPI.Repository
       }
       catch (Exception ex)
       {
-        Console.WriteLine(ex.ToString());
-        throw;
+        //Console.WriteLine(ex.ToString());
+        //throw;
+        return CreateObject.GetBaseDtos(ex, 500, "500");
       }
     }
 
@@ -115,10 +126,14 @@ namespace FronoTallyAPI.Repository
       }
       catch (Exception ex)
       {
-        Console.WriteLine(ex.ToString());
-        throw;
+        //Console.WriteLine(ex.ToString());
+        //throw;
+        return CreateObject.GetBaseDtos(ex, 500, "500");
       }
     }
+
+
+
 
   }
 

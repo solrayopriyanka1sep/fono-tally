@@ -175,6 +175,7 @@ export interface LedgerInfo {
     SAC_HSNcode? : string;
 }
 
+
 export interface StockGroupInfo {
     StockGroupName: string;
     Alias?: string;

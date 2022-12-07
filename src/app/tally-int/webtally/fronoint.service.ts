@@ -83,17 +83,38 @@ export class FronoIntService {
 
   getUOM(): Observable<any> {
     //http://103.212.143.188:5000/api/UnitMaster/GetAll/43
-    return this.http.get<any>(this.fronoURL1 + '/UnitMaster/GetAll/' + this.FronoCompany  )
-
     //return this.http.get<any>(this.fronoURL1 + '/UnitMaster/GetAll/' + this.FronoCompany  )
+    return this.http.get<any>(this.fronoURL + '/UnitsMaster'  )
+    
+  }
 
+  getGodowns(): Observable<any> {
+    //http://103.212.143.188:5000/api/WarehouseMaster/GetAll/43
+    return this.http.get<any>(this.fronoURL1 + '/WarehouseMaster/GetAll/' + this.FronoCompany  )
+  }
+
+  getStockGroups(): Observable<any> {
+    //http://103.212.143.188:5000/api/DepartmentMaster/GetAll/43
+    //return this.http.get<any>(this.fronoURL1 + '/DepartmentMaster/GetAll/' + this.FronoCompany  )
+    return this.http.get<any>(this.fronoURL + '/masterData/GetStockGroups/' + this.FronoCompany  )
+  }
+
+  getStockCategories(): Observable<any> {
+    //http://103.212.143.188:5000/api/CategoryMaster/GetAll/43
+    //and
+    //http://103.212.143.188:5000/api/SubCategory/GetAll/43
+    //return this.http.get<any>(this.fronoURL1 + '/CategoryMaster/GetAll/' + this.FronoCompany  )
+
+    return this.http.get<any>(this.fronoURL + '/masterData/GetStockCategories/' + this.FronoCompany  )
   }
 
   
-
   getStockItems(): Observable<any> {
     //http://103.212.143.188:5000/api/ItemMaster/GetAllItemResponses/43/0
-    return this.http.get<any>(this.fronoURL1 + '/ItemMaster/GetAllItemResponses/' + this.FronoCompany  )
+    //return this.http.get<any>(this.fronoURL1 + '/ItemMaster/GetAllItemResponses/' + this.FronoCompany  + "/0" )
+
+    return this.http.get<any>(this.fronoURL + '/masterData/GetStockItems/' + this.FronoCompany  )
+
   }
 
 

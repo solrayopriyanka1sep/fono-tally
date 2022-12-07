@@ -1,5 +1,5 @@
 using FronoTallyAPI.context;
-using FronoTallyAPI.models;
+using Fronotallyapi.Models;
 using FronoTallyAPI.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +48,8 @@ namespace FronoTallyAPI
 
       services.AddSingleton<DapperContext>();
       services.AddScoped<IConfigDataRepository, ConfigDataRepository>();
+      services.AddScoped<IunitsMasterRepository, unitsMasterRepository>();
+      services.AddScoped<ImasterDataRepository, masterDataRepository>();
       services.AddControllers();
 
     }

@@ -844,6 +844,9 @@ export class  TallyMastersXML {
       const XMLstr:string = this.XMLHeadImportMasters + 
             `<TALLYMESSAGE xmlns:UDF="TallyUDF">
               <UNIT NAME="${UOMid}" ACTION="DELETE">
+              <NAME.LIST>
+                <NAME>${UOMid}</NAME>
+              </NAME.LIST>
               </UNIT>
              </TALLYMESSAGE>` + this.XMLBottomImport
       return XMLstr
@@ -944,6 +947,9 @@ export class  TallyMastersXML {
     const XMLstr:string = this.XMLHeadImportMasters + 
       `<TALLYMESSAGE xmlns:UDF="TallyUDF">
         <GODOWN NAME="${LocationName}" ACTION="DELETE">
+          <NAME.LIST>
+            <NAME>${LocationName}</NAME>
+          </NAME.LIST>
         </GODOWN>
       </TALLYMESSAGE>` + this.XMLBottomImport
     return XMLstr
@@ -1029,6 +1035,9 @@ export class  TallyMastersXML {
       const XMLstr:string = this.XMLHeadImportMasters + 
         `<TALLYMESSAGE xmlns:UDF="TallyUDF">
           <COSTCENTRE NAME="${CostCenterName}" ACTION="DELETE">
+          <NAME.LIST>
+            <NAME>${CostCenterName}</NAME>
+          </NAME.LIST>
           </COSTCENTRE>
         </TALLYMESSAGE>` + this.XMLBottomImport
       return XMLstr
@@ -1102,6 +1111,9 @@ export class  TallyMastersXML {
       const XMLstr:string = this.XMLHeadImportMasters + 
         `<TALLYMESSAGE xmlns:UDF="TallyUDF">
           <COSTCATEGORY NAME="${CostCategoryName}" ACTION="DELETE">
+          <NAME.LIST>
+            <NAME>${CostCategoryName}</NAME>
+          </NAME.LIST>
           </COSTCATEGORY>
         </TALLYMESSAGE>` + this.XMLBottomImport
       return XMLstr
@@ -1320,6 +1332,9 @@ export class  TallyMastersXML {
       const XMLstr:string = this.XMLHeadImportMasters + 
         `<TALLYMESSAGE xmlns:UDF="TallyUDF">
           <STOCKGROUP NAME="${StockGroupName}" ACTION="DELETE">
+          <NAME.LIST>
+            <NAME>${StockGroupName}</NAME>
+          </NAME.LIST>
           </STOCKGROUP>
         </TALLYMESSAGE>` + this.XMLBottomImport
       return XMLstr
@@ -1392,6 +1407,9 @@ export class  TallyMastersXML {
       const XMLstr:string = this.XMLHeadImportMasters + 
         `<TALLYMESSAGE xmlns:UDF="TallyUDF">
           <STOCKCATEGORY NAME="${StockCategoryName}" ACTION="DELETE">
+          <NAME.LIST>
+            <NAME>${StockCategoryName}</NAME>
+          </NAME.LIST>
           </STOCKGROUP>
         </TALLYMESSAGE>` + this.XMLBottomImport
       return XMLstr
@@ -1526,16 +1544,19 @@ export class  TallyMastersXML {
         
 //  'ItemName||Item Group||Modified Name||Category||BaseUOM||OpeningQty||OpeningRate||OpeningValue||GSTApplicable||GSTTypeofSupply||GSTapplicablefrom||CalculationType||Taxability||GSTRate||isReversecharge||CostingMethod||IsPerishable||InclusiveofTax    
     CreateModifyItemXML(StockItemInfo:ItemInfo, isModify:boolean = false, ModifiedName:string ="" ):string {        
+       
+       if(StockItemInfo.Alias) StockItemInfo.Alias = StockItemInfo.Alias.trim().toUpperCase() ==  StockItemInfo.ItemName.trim().toUpperCase() ? "" : this.XmlName(StockItemInfo.Alias) 
+
         StockItemInfo.ItemName = this.XmlName(StockItemInfo.ItemName)
         StockItemInfo.BaseUOM = this.XmlName(StockItemInfo.BaseUOM)
         if(ModifiedName) ModifiedName = this.XmlName(ModifiedName)
         ModifiedName = isModify && ModifiedName != "" ? ModifiedName : StockItemInfo.ItemName
   
-
-        if(StockItemInfo.Alias) StockItemInfo.Alias = this.XmlName(StockItemInfo.Alias)
+        
         StockItemInfo.Parent = !StockItemInfo.Parent ? "" : this.XmlName(StockItemInfo.Parent)
         StockItemInfo.Category = !StockItemInfo.Category ? "" : this.XmlName(StockItemInfo.Category)
 
+      
         if(StockItemInfo.ItemDescription) StockItemInfo.ItemDescription = this.XmlName(StockItemInfo.ItemDescription)
         StockItemInfo.CostingMethod = !StockItemInfo.CostingMethod ?  COSTINGMETHOD.AverageCost  : StockItemInfo.CostingMethod
 
@@ -1545,8 +1566,6 @@ export class  TallyMastersXML {
         const InclusiveOfTax:string = StockItemInfo.isInclusiveOfTax ? "Yes" : "No"
         const ReverseCharge:string = StockItemInfo.isReverseCharge ? "Yes" : "No"
         
-
-
         StockItemInfo.GSTApplicable = !StockItemInfo.GSTApplicable ? false : true
         const strGSTApplicable = StockItemInfo.GSTApplicable ? GSTAPPLICABLE.Applicable : GSTAPPLICABLE.NotApplicable
         
@@ -1562,18 +1581,25 @@ export class  TallyMastersXML {
           if(StockItemInfo.GSTValuationType) StockItemInfo.GSTValuationType = this.XmlName(StockItemInfo.GSTValuationType)
         }
   
-    
+        StockItemInfo.OpeningQty = !StockItemInfo.OpeningQty ? 0 : StockItemInfo.OpeningQty
+        StockItemInfo.OpeningRate =  !StockItemInfo.OpeningRate ? 0 : StockItemInfo.OpeningRate
+        StockItemInfo.OpeningValue = StockItemInfo.OpeningQty * StockItemInfo.OpeningRate
+        StockItemInfo.CGST_Rate = !StockItemInfo.CGST_Rate ? 0 : StockItemInfo.CGST_Rate
+        StockItemInfo.SGST_Rate = !StockItemInfo.SGST_Rate ? 0 : StockItemInfo.SGST_Rate
+        StockItemInfo.IGST_Rate = !StockItemInfo.IGST_Rate ? 0 : StockItemInfo.IGST_Rate
+
+
         let XMLstr = this.XMLHeadImportMasters
         XMLstr = XMLstr + `<TALLYMESSAGE xmlns:UDF="TallyUDF">`
-        XMLstr = XMLstr + " <STOCKITEM NAME=" + StockItemInfo.ItemName + ` RESERVEDNAME="">`            
+        XMLstr = XMLstr + ` <STOCKITEM NAME="` + StockItemInfo.ItemName + `" RESERVEDNAME="">`            
         XMLstr = XMLstr + "<NAME.LIST>"
-
         XMLstr = XMLstr + `<NAME>` + ModifiedName + `</NAME>`
-        if(!(!StockItemInfo.Alias) ) {
+
+        if((!(!StockItemInfo.Alias)) || StockItemInfo.Alias != ""  ) {
           XMLstr = XMLstr + `<NAME>${StockItemInfo.Alias}</NAME>`
         }                
         XMLstr = XMLstr + "</NAME.LIST>"
-        XMLstr = XMLstr + "<PARENT>" + StockItemInfo.Parent + "</PARENT>"
+        XMLstr = XMLstr + "<PARENT>" + StockItemInfo.Parent + "</PARENT>" 
         XMLstr = XMLstr + "<CATEGORY>" + StockItemInfo.Category + "</CATEGORY>"
         XMLstr = XMLstr + "<GSTAPPLICABLE>" + strGSTApplicable + "</GSTAPPLICABLE>"
 //    '      <TAXCLASSIFICATIONNAME/>
