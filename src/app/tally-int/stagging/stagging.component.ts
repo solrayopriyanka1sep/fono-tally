@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TallyDataService } from '../webtally/tallydata.service';
 import { TallyIntService } from '../webtally/tallyint.service';
 import { FronoIntService } from '../webtally/fronoint.service';
 import { MastersStageData } from '../model/MastersStageData';
-import {  TALLYGROUP , LedgerInfo, ItemInfo } from '../webtally/tallyInterfaces';
-import { Observable } from 'rxjs';
-import * as e from 'cors';
+import { VoucherStageData } from '../model/VoucherStageData';
+import {  TALLYGROUP , LedgerInfo, ItemInfo, StockGroupInfo, VoucherData, LedgerEntry, InventoryEntry } from '../webtally/tallyInterfaces';
+//import { Observable } from 'rxjs';
+//import * as e from 'cors';
+
+
 
 @Component({
   selector: 'app-stagging',
@@ -17,11 +21,16 @@ export class StaggingComponent implements OnInit {
   TallyData:TallyDataService
   MasterTypes:string[] = []
   ActionList:string[] = []
-  UOMList:any[] = []
-  stockGroupsList:any[] = []
-  stockCategoriesList:any[] = []
+//  UOMList:any[] = []
+//  stockGroupsList:any[] = []
+//  stockCategoriesList:any[] = []
+   LedgersList:any[] = []
 
-  constructor(private TallyAPI:TallyIntService, private FronoAPI:FronoIntService, private TallyDataSrv:TallyDataService,  private route:Router) { 
+   mFromDt:any;
+   mToDt:any;
+//  datePipe: any;
+
+  constructor(private TallyAPI:TallyIntService, private FronoAPI:FronoIntService, private TallyDataSrv:TallyDataService,  private route:Router, private datePipe: DatePipe) { 
     this.TallyData = this.TallyDataSrv
     this.MasterTypes = this.TallyData.MasterTypes
     this.ActionList = ['Create', 'Modify', 'Delete' ]
@@ -39,7 +48,7 @@ export class StaggingComponent implements OnInit {
       this.FronoAPI.getUOM().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
-              this.UOMList = res.data.data
+              //this.UOMList = res.data.data
               res.data.data.forEach( (item:any) => {
                   let mData = new MastersStageData()
                   mData.Action = "Create"
@@ -71,7 +80,7 @@ export class StaggingComponent implements OnInit {
       this.FronoAPI.getStockGroups().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
-              this.stockGroupsList = res.data
+//              this.stockGroupsList = res.data
               res.data.forEach( (item:any) => {
                   let mData = new MastersStageData()
                   mData.Action = "Create"
@@ -96,7 +105,7 @@ export class StaggingComponent implements OnInit {
       this.FronoAPI.getStockCategories().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
-              this.stockCategoriesList = res.data
+//              this.stockCategoriesList = res.data
               res.data.forEach( (item:any) => {
                   let mData = new MastersStageData()
                   mData.Action = "Create"
@@ -147,9 +156,11 @@ export class StaggingComponent implements OnInit {
           }                
       })          
 
+      
       this.FronoAPI.getAccounts().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
+              //this.LedgersList = res.data
               res.data.forEach( (item:any) => {
                   let mData = new MastersStageData()
                   mData.Action = "Create"
@@ -269,8 +280,74 @@ export class StaggingComponent implements OnInit {
           }                
       })          
 
+    
+     this.TallyDataSrv.vouchersFromDate.setDate(this.TallyDataSrv.vouchersToDate.getDate() - 30) 
+     this.mFromDt = this.datePipe.transform(this.TallyDataSrv.vouchersFromDate, 'yyyy-MM-dd');
+     this.mToDt = this.datePipe.transform(this.TallyDataSrv.vouchersToDate, 'yyyy-MM-dd');
+     
 
     }
+  }
+
+  getFronoVoucherstoExport(){
+    //Start Getting Vouchers Data
+
+    this.FronoAPI.getSalesVouchersList().subscribe({        
+      next: (res:any) => {
+          // if(this.UOMList.length == 0) {          }
+          if(res.messageText == "") {
+            res.data.forEach( (item:any) => {
+                let mData = new VoucherStageData()
+                mData.Action = "Create"
+                mData.VoucherType = "Sales"
+                mData.VoucherNumber = item.invoiceId
+                mData.VoucherDate = item.invoiceDate.substring(0, 10)
+                mData.VoucherAmt = item.invoiceTotal
+                mData.VoucherRef = item.invoiceNumber
+                mData.VoucherRefDate = item.invoiceDate.substring(0, 10)
+                mData.HeaderLedger = item.customerName            
+                this.TallyData.TransactionsStageData.push(mData) 
+            });
+          } else {
+            //dataRow.Status = "Failed" 
+            //dataRow.Message = res.messageText
+          }              
+        },
+        error: error => {
+            console.error( error);
+            //dataRow.Status = "Failed" 
+            //dataRow.Message = error.messageText
+        }                
+    })          
+
+
+    this.FronoAPI.getJrnlVouchersList().subscribe({        
+      next: (res:any) => {
+          if(res.messageText == "") {
+            res.data.forEach( (item:any) => {
+                let mData = new VoucherStageData()
+                mData.Action = "Create"
+                mData.VoucherType = "Journal"
+                mData.VoucherNumber = item.accountsId
+                mData.VoucherDate = item.entryDate.substring(0, 10)
+                mData.VoucherAmt = 0
+                mData.VoucherRef = item.voucherNo
+                mData.VoucherRefDate = item.entryDate.substring(0, 10)
+                this.TallyData.TransactionsStageData.push(mData) 
+            });
+          } else {
+            //dataRow.Status = "Failed" 
+            //dataRow.Message = res.messageText
+          }              
+        },
+        error: error => {
+            console.error( error);
+            //dataRow.Status = "Failed" 
+            //dataRow.Message = error.messageText
+        }                
+    })          
+
+
   }
 
   async SaveMasterstoFrono() {    
@@ -304,6 +381,7 @@ export class StaggingComponent implements OnInit {
     }
 
   }
+
 
   ExportMasterstoTally(){
     for (const dataRow of this.TallyData.MastersStageData) {
@@ -374,6 +452,25 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
+      if (dataRow.MasterType == "Ledgers"  && dataRow.Action == "Delete"  ) { 
+        this.TallyAPI.DeleteLedger(dataRow.MasterName ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Deleted " + res.data.DELETED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }              
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            }                
+        })
+      }
+
       if (dataRow.isSelected && dataRow.MasterType == "Godowns"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
         this.TallyAPI.CreateModifyLocation(dataRow.MasterName, false,"", dataRow.ParentName, "" , dataRow.Address1 ).subscribe({
           next: (res:any) => {
@@ -431,7 +528,103 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
+      if (dataRow.MasterType == "Units"  && dataRow.Action == "Delete"  ) { 
+        this.TallyAPI.DeleteUOM( dataRow.MasterName ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Deleted " + res.data.DELETED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }              
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            }                
+        })
+      }
+
+      if (dataRow.isSelected && dataRow.MasterType == "Stock Groups"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) { 
+        let stockGroupData:StockGroupInfo = {
+          StockGroupName: dataRow.MasterName,
+        }
+        this.TallyAPI.CreateModifyStockGroup(  stockGroupData,  false, "" ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Created " + res.data.CREATED + ", Modified " + res.data.ALTERED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            },
+        })      
+      }
+
+      if (dataRow.MasterType == "Stock Groups"  && dataRow.Action == "Delete"  ) { 
+        this.TallyAPI.DeleteStockGroup( dataRow.MasterName  ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Deleted " + res.data.DELETED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }              
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            }                
+        })
+      }
       
+      if (dataRow.isSelected && dataRow.MasterType == "Stock Categories"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) { 
+        this.TallyAPI.CreateModifyStockCategory(  dataRow.MasterName,  false, "" , "", dataRow.ParentName ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Created " + res.data.CREATED + ", Modified " + res.data.ALTERED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            },
+        })      
+      }
+      
+      if (dataRow.MasterType == "Stock Categories"  && dataRow.Action == "Delete"  ) { 
+        this.TallyAPI.DeleteStockCategory( dataRow.MasterName  ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Deleted " + res.data.DELETED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }              
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            }                
+        })
+      }
 
       if (dataRow.isSelected && dataRow.MasterType == "Stock Items"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
         let itemData:ItemInfo = {          
@@ -447,7 +640,6 @@ export class StaggingComponent implements OnInit {
           CGST_Rate : dataRow.CGST,
           IGST_Rate : dataRow.IGST
         }
-
         
         this.TallyAPI.CreateModifyStockItem( itemData, false, ""  ).subscribe({
           next: (res:any) => {
@@ -467,13 +659,152 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      
+      if (dataRow.MasterType == "Stock Items"  && dataRow.Action == "Delete"  ) { 
+        this.TallyAPI.DeleteStockItem( dataRow.MasterName  ).subscribe({
+          next: (res:any) => {
+              if(res.Error == false) {
+                dataRow.Status = "Success" 
+                dataRow.Message = "Deleted " + res.data.DELETED
+              } else {
+                dataRow.Status = "Failed" 
+                dataRow.Message = res.Message
+              }              
+            },
+            error: error => {
+                console.error( error);
+                dataRow.Status = "Failed" 
+                dataRow.Message = error.messageText
+            }                
+        })
+      }
+
+     
       //console.log(dataRow);
     }
 
   }
 
 
+  ExportVoucherstoTally(){
+    console.log("Export voucher started...")
+    //this.TallyData.CreateVoucher()
+    for (const VchDataRow of this.TallyData.TransactionsStageData) {
+//      console.log(VchDataRow)
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Sales"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+          this.FronoAPI.getSingleSalesVoucherData(VchDataRow.VoucherNumber).subscribe({
+          next: (res:any) => {
+             if(res.messageText == "") {
+              let VchData:VoucherData  = new VoucherData()
+              VchData.Action = "Create"
+              VchData.VoucherTypeName = "Sales"
+//              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+
+              //Temp change date to 1st of Dec 2021  
+              VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+              VchData.VoucherNumber = VchDataRow.VoucherNumber
+              VchData.VoucherRef = VchDataRow.VoucherRef             
+              VchData.HeaderLedger = VchDataRow.HeaderLedger
+              VchData.Narration  = "Created from Frono API" 
+              VchData.VoucherInvoiceView ="Invoice Voucher View"
+              VchData.VoucherEntryMode="Item Invoice"
+      
+              let LedgerEntriesData: LedgerEntry[] = []
+              let InventoryEntriesData: InventoryEntry[] = []
+              for (const itemsRow of res.data.itemDetails) {
+                InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: "Sales Account" })
+              } 
+              VchData.InventoryEntriesData = InventoryEntriesData
+
+              this.TallyAPI.SaleVoucher(VchData  ).subscribe({
+                next: (response:any) => {
+                    console.log(response)
+                    if(response.Error == false) {
+                      VchDataRow.Status = "Success" 
+                      VchDataRow.Message = response.data
+                      //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                    } else {
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = response.Message
+                    }
+                  },
+                  error: error => {
+                      console.error( error);
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = error.messageText
+                  },
+              })            
+            }
+          },
+            error: error => {
+                console.error( error);
+                VchDataRow.Status = "Failed" 
+                VchDataRow.Message = error.messageText
+            },
+        })      
+      }
+
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Journal"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+        this.FronoAPI.getSingleJournalData(VchDataRow.VoucherNumber).subscribe({
+          next: (res:any) => {
+            if(res.messageText == "") {
+              let VchData:VoucherData  = new VoucherData()
+              VchData.Action = "Create"
+              VchData.VoucherTypeName = "Journal"
+  //              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+              //Temp change date to 1st of Dec 2021  
+              VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+              VchData.VoucherNumber = VchDataRow.VoucherNumber
+              VchData.VoucherRef = VchDataRow.VoucherRef
+              VchData.VoucherRefDate = VchDataRow.VoucherRefDate
+              VchData.Narration  = "Created from Frono API" 
+      
+              let LedgerEntriesData: LedgerEntry[] = []
+  //            let InventoryEntriesData: InventoryEntry[] = []           
+              for (const itemsRow of res.data.accountDetailsList) {
+                let ledInfo:any[] = this.TallyData.MastersStageData.filter( (el:any) => el.MasterType == "Ledgers" && el.Id == itemsRow.ledgerAccountId )
+                
+                LedgerEntriesData.push({    
+                  LedgerName :  ledInfo[0].MasterName ,
+                  CashLedger  : "" ,
+                  DebitCredit : itemsRow.drCr.toUpperCase(),
+                  LineAmount  : itemsRow.debitAmount + itemsRow.creditAmount
+                })
+              } 
+              VchData.LedgerEntriesData = LedgerEntriesData
+
+              this.TallyAPI.JournalVoucher(VchData ).subscribe({
+                next: (response:any) => {
+                    if(response.Error == false) {
+                      VchDataRow.Status = "Success" 
+                      VchDataRow.Message = response.data
+                      //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                    } else {
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = response.Message
+                    }
+                  },
+                  error: error => {
+                      console.error( error);
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = error.messageText
+                  },
+              })            
+            }
+          },
+          error: error => {
+              console.error( error);
+              VchDataRow.Status = "Failed" 
+              VchDataRow.Message = error.messageText
+          },
+        })      
+      }
+
+      
+
+    }    
+  }
 
 
 
@@ -482,11 +813,6 @@ export class StaggingComponent implements OnInit {
 
   }
   
-  TallyExport(){
-    //this.TallyData.CreateVoucher()
-    console.log("Exporting to Tally..")
-    
-  }
 
   toggleSelect(){
     this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected)
@@ -498,33 +824,6 @@ export class StaggingComponent implements OnInit {
   }
 
 
-/*
-  pushLedgersToTally(dataRow:any, isModify:boolean=false, ModifiedName:string = "" ) {    
-    return new Observable<any>((observer) => {
-      let ledgerData:LedgerInfo = {
-        LedName : "",
-        LedGroup : ""
-      }
-      ledgerData.Id =  dataRow.Id
-      ledgerData.LedName = dataRow.MasterName
-      ledgerData.LedGroup = dataRow.ParentName
-
-      console.log("Stagging component", ledgerData)
-     
-      this.TallyAPI.CreateModifyLedger(ledgerData, false, "" ).subscribe({
-        next: (res:any) => {
-            observer.next(res)
-          },
-          error: error => {
-              console.error( error);
-              dataRow.Status = "Failed" 
-              dataRow.Message = error.messageText
-          },
-      })      
-
-    });
-  }
-  */
 
 
 

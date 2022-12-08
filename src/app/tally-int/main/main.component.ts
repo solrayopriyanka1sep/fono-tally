@@ -4,8 +4,6 @@ import { TallyDataService } from '../webtally/tallydata.service';
 //import { HttpClient  } from '@angular/common/http';
 //import {XMLParser}  from 'fast-xml-parser'
 import { TallyIntService } from '../webtally/tallyint.service';
-
-
 import { TALLYGROUP } from '../webtally/tallyInterfaces';
 
 
@@ -81,93 +79,6 @@ export class MainComponent implements OnInit {
           }                
     })
   }
-
-
-/*  
-  dataImport(){
-    console.log("data import started")
-
-    const StrTallyRequest:string = `<ENVELOPE>
-    <HEADER>
-        <VERSION>1</VERSION>
-        <TALLYREQUEST>Export</TALLYREQUEST>
-        <TYPE>Data</TYPE>
-        <ID>AVSGETCOREPORT</ID>
-    </HEADER>
-    <BODY>
-        <DESC>
-            <STATICVARIABLES>
-                <EXPLODEFLAG>Yes</EXPLODEFLAG>
-                <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-            </STATICVARIABLES>
-            <TDL>
-                <TDLMESSAGE>
-                    <REPORT NAME="AVSGETCOREPORT" ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No">
-                        <FORMS>AVSGETCOFORM</FORMS>
-                    </REPORT>
-                    <FORM NAME="AVSGETCOFORM" ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No">
-                        <TOPPARTS>AVSGETCOPART</TOPPARTS>
-                    </FORM>
-                    <PART NAME="AVSGETCOPART" ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No">
-                        <TOPLINES>AVSGETCOLINE</TOPLINES>
-                        <SCROLLED>Vertical</SCROLLED>
-                    </PART>
-                    <LINE NAME="AVSGETCOLINE" ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No">
-                        <LEFTFIELDS>AVSGETCOFLD</LEFTFIELDS>
-                    </LINE>
-                    <FIELD NAME="AVSGETCOFLD" ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No">
-                        <SET>##SVCurrentCompany</SET>
-                    </FIELD>
-                </TDLMESSAGE>
-            </TDL>
-        </DESC>
-    </BODY>
-            </ENVELOPE>`
-
-    const strRtnVal:string = `
-    <ENVELOPE>
-      <HEADER>
-          <VERSION>1</VERSION>
-          <TALLYREQUEST>Export</TALLYREQUEST>
-          <TYPE>Collection</TYPE>
-          <ID>AVSGroups</ID>
-      </HEADER>
-        <BODY>
-            <DESC>
-                <STATICVARIABLES>
-                    <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-                </STATICVARIABLES>
-                <TDL>
-                    <TDLMESSAGE>
-                        <COLLECTION ISMODIFY="No" ISFIXED="No" ISINITIALIZE="No" ISOPTION="No" ISINTERNAL="No" NAME="AVSGroups">
-                            <TYPE>Groups</TYPE>                                                 
-                            <NATIVEMETHOD>Parent</NATIVEMETHOD>
-                            <NATIVEMETHOD>IsRevenue</NATIVEMETHOD> 
-                            <COMPUTE>GroupName : $Name[1].Name</COMPUTE>
-                            <COMPUTE>Alias : $$alias:ledger</COMPUTE>
-                        </COLLECTION>
-                    </TDLMESSAGE>
-                </TDL>
-            </DESC>
-        </BODY>
-        </ENVELOPE>`
-
-
-    const XMLP = new XMLParser()
-
-    this.http.post(this.tallyURL, strRtnVal , { responseType:'text'  } ).subscribe({
-      next: res => {
-        let jObj:any = XMLP.parse(res)
-        console.log(jObj.ENVELOPE.BODY.DATA.COLLECTION.GROUP)
-      },
-      error: error => {
-          //this.errorMessage = error.message;
-          console.error('There was an error!', error);
-      }            
-    })
-
-  }
-*/
 
 
 }

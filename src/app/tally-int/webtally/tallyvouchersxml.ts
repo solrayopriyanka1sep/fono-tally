@@ -77,7 +77,7 @@ export class TallyVouchersXML {
     let VoucherTotal:number = 0
     ReceiptData.HeaderLedger = this.STR2XML(ReceiptData.HeaderLedger)
     ReceiptData.VoucherTypeName = this.STR2XML(ReceiptData.VoucherTypeName)
-    ReceiptData.VoucherNumber = this.STR2XML(ReceiptData.VoucherNumber)
+//    ReceiptData.VoucherNumber = this.STR2XML(ReceiptData.VoucherNumber)
     ReceiptData.VoucherRef = !ReceiptData.VoucherRef ? "" : this.STR2XML(ReceiptData.VoucherRef)
     ReceiptData.Narration = !ReceiptData.Narration ? "" : this.STR2XML(ReceiptData.Narration)
 
@@ -252,7 +252,7 @@ export class TallyVouchersXML {
     let VoucherTotal:number = 0
     PaymentData.HeaderLedger = this.STR2XML(PaymentData.HeaderLedger)
     PaymentData.VoucherTypeName = this.STR2XML(PaymentData.VoucherTypeName)
-    PaymentData.VoucherNumber = this.STR2XML(PaymentData.VoucherNumber)
+//    PaymentData.VoucherNumber = this.STR2XML(PaymentData.VoucherNumber)
     PaymentData.VoucherRef = !PaymentData.VoucherRef ? "" : this.STR2XML(PaymentData.VoucherRef)
     PaymentData.Narration = !PaymentData.Narration ? "" : this.STR2XML(PaymentData.Narration)
 
@@ -430,7 +430,7 @@ export class TallyVouchersXML {
 
     JournalData.HeaderLedger = this.STR2XML(JournalData.HeaderLedger)
     JournalData.VoucherTypeName = this.STR2XML(JournalData.VoucherTypeName)
-    JournalData.VoucherNumber = this.STR2XML(JournalData.VoucherNumber)
+//    JournalData.VoucherNumber = this.STR2XML(JournalData.VoucherNumber)
     JournalData.VoucherRef = !JournalData.VoucherRef ? "" : this.STR2XML(JournalData.VoucherRef)
     JournalData.Narration = !JournalData.Narration ? "" : this.STR2XML(JournalData.Narration)
 
@@ -560,7 +560,7 @@ export class TallyVouchersXML {
 
     SaleData.HeaderLedger = this.STR2XML(SaleData.HeaderLedger)
     SaleData.VoucherTypeName = this.STR2XML(SaleData.VoucherTypeName)
-    SaleData.VoucherNumber = this.STR2XML(SaleData.VoucherNumber)
+//    SaleData.VoucherNumber = SaleData.VoucherNumber
     SaleData.VoucherRef = !SaleData.VoucherRef ? "" : this.STR2XML(SaleData.VoucherRef)
     SaleData.Narration = !SaleData.Narration ? "" : this.STR2XML(SaleData.Narration)
 
@@ -740,7 +740,7 @@ export class TallyVouchersXML {
 
     PurchaseData.HeaderLedger = this.STR2XML(PurchaseData.HeaderLedger)
     PurchaseData.VoucherTypeName = this.STR2XML(PurchaseData.VoucherTypeName)
-    PurchaseData.VoucherNumber = this.STR2XML(PurchaseData.VoucherNumber)
+//    PurchaseData.VoucherNumber = this.STR2XML(PurchaseData.VoucherNumber)
     PurchaseData.VoucherRef = !PurchaseData.VoucherRef ? "" : this.STR2XML(PurchaseData.VoucherRef)
     PurchaseData.Narration = !PurchaseData.Narration ? "" : this.STR2XML(PurchaseData.Narration)
 
@@ -925,7 +925,7 @@ export class TallyVouchersXML {
 
     SalesReturnData.HeaderLedger = this.STR2XML(SalesReturnData.HeaderLedger)
     SalesReturnData.VoucherTypeName = this.STR2XML(SalesReturnData.VoucherTypeName)
-    SalesReturnData.VoucherNumber = this.STR2XML(SalesReturnData.VoucherNumber)
+//    SalesReturnData.VoucherNumber = this.STR2XML(SalesReturnData.VoucherNumber)
     SalesReturnData.VoucherRef = !SalesReturnData.VoucherRef ? "" : this.STR2XML(SalesReturnData.VoucherRef)
     SalesReturnData.Narration = !SalesReturnData.Narration ? "" : this.STR2XML(SalesReturnData.Narration)
 
@@ -1106,7 +1106,7 @@ export class TallyVouchersXML {
 
     PurchaseReturnData.HeaderLedger = this.STR2XML(PurchaseReturnData.HeaderLedger)
     PurchaseReturnData.VoucherTypeName = this.STR2XML(PurchaseReturnData.VoucherTypeName)
-    PurchaseReturnData.VoucherNumber = this.STR2XML(PurchaseReturnData.VoucherNumber)
+//    PurchaseReturnData.VoucherNumber = this.STR2XML(PurchaseReturnData.VoucherNumber)
     PurchaseReturnData.VoucherRef = !PurchaseReturnData.VoucherRef ? "" : this.STR2XML(PurchaseReturnData.VoucherRef)
     PurchaseReturnData.Narration = !PurchaseReturnData.Narration ? "" : this.STR2XML(PurchaseReturnData.Narration)
 

@@ -9,7 +9,6 @@
     </div>
     <br/>
 
-
     <p style="text-align: center;">
         <label for="fname">Tally URL : </label>
         <input type="text" [(ngModel)]="tallyURL" required>
@@ -37,9 +36,6 @@
         <button (click)="dataEmport()">Export Data to Tally</button>
     </p>
 
-    <p style="text-align: center;" *ngIf="connected">   
-        <button (click)="CreateGroup()">Create Group</button>
-    </p>
 
 
 </div>

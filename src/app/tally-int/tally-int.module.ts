@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TallyIntService } from './webtally/tallyint.service';
 import { TallyDataService } from './webtally/tallydata.service';
 import { FronoIntService } from './webtally/fronoint.service';
+import { DatePipe } from '@angular/common';
 
 //import { TallyIntegration } from "./webtally/tallyintegration"
 
@@ -30,7 +31,8 @@ import { FronoIntService } from './webtally/fronoint.service';
   providers:[
     TallyIntService,
     TallyDataService,
-    FronoIntService
+    FronoIntService,
+    DatePipe
   ],
   exports : [
     MainComponent,

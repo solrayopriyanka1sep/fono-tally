@@ -40,6 +40,9 @@ export class TallyDataService {
     TallyCostCategories: any[] = []
     TallyLocations: any[] = []
 
+    vouchersFromDate:Date = new Date()
+    vouchersToDate:Date = new Date()
+
     MastersStageData:any[] = []
     TransactionsStageData:any[] = []
     FronoCompanyNumber:number = 0

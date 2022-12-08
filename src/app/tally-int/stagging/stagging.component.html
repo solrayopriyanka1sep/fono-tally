@@ -53,37 +53,47 @@
         </div>
     <div class="panel" id="two-panel">
         <div class="panel-title" style="margin-bottom: 10px;">Import Transactions Data</div>
+
+        <div style="padding: 5px;">
+            <label for="fromDt">From Date:</label><input type="date" id="fromDt" [(ngModel)]="mFromDt" required > 
+            <label for="toDt" style="padding-left: 20px;">To Date:</label><input type="date" id="toDt" [(ngModel)]="mToDt" required >
+            <button (click)="getFronoVoucherstoExport()" style="margin-left: 10px ;">Show Vouchers Data</button>
+        </div>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th style="text-align: center; width: 15%; ">Transaction Type</th>
-                    <th style="text-align: center; width: 19%;">Voucher Type</th>
-                    <th style="text-align: center; width: 15%;">Action</th>
-                    <th style="text-align: center; width: 15%;" >Select</th>
+                    <th style="text-align: center; width: 10%;">Voucher Num</th>
+                    <th style="text-align: center; width: 10%;">Voucher Date</th>
+                    <th style="text-align: center; width: 10%;">Amount</th>
+                    <th style="text-align: center; width: 10%;">Action</th>
+                    <th style="text-align: center; width:  5%;" >Select</th>
                     <th style="text-align: center; width: 15%;">Status</th>
-                    <th style="text-align: center; width: 15%;">Message</th>
+                    <th style="text-align: center; width: 20%;">Message</th>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let maprow of TallyData.MastersStageData; let i = index">
-                        <td class="filterable-cell" style="width: 15%;" >{{maprow.MasterType}}</td>
-                        <td class="filterable-cell" style="width: 20%;">{{maprow.MasterName}}</td>
-                        <td class="filterable-cell" style="width: 15%;">
+                    <tr *ngFor="let maprow of TallyData.TransactionsStageData; let i = index">
+                        <td class="filterable-cell" style="width: 15%;" >{{maprow.VoucherType}}</td>
+                        <td class="filterable-cell" style="width: 10%;">{{maprow.VoucherNumber}}</td>
+                        <td class="filterable-cell" style="width: 10%;">{{maprow.VoucherDate}}</td>
+                        <td class="filterable-cell" style="width: 10%; text-align: right;">{{maprow.VoucherAmt}}</td>
+                        <td class="filterable-cell" style="width: 10%;">
                             <select [(ngModel)]="maprow.Action" >
                                 <option *ngFor="let ActionName of ActionList" name="ActionName" [value]="ActionName"   >
                                     {{ActionName}}
                                 </option>
                             </select>                    
                         </td>
-                        <td class="filterable-cell" style="width: 15%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
+                        <td class="filterable-cell" style="width: 5%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
                         <td class="filterable-cell" style="width: 15%;">:{{maprow.Status}} </td>
-                        <td class="filterable-cell" style="width: 15%;">:{{maprow.Message}} </td>
+                        <td class="filterable-cell" style="width: 20%;">:{{maprow.Message}} </td>
                     </tr>
                 </tbody>                
             </table>
 
         <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 0">
-            <button (click)="TallyExport()">Export to Tally</button>&nbsp;&nbsp;
+            <button (click)="ExportVoucherstoTally()">Export to Tally</button>&nbsp;&nbsp;
         </div>
         <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 1">
             <button >Save to Frono</button>&nbsp;&nbsp;

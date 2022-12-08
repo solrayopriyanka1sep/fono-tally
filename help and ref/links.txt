@@ -17,3 +17,10 @@ https://stackoverflow.com/questions/57756766/how-to-retrieve-gstn-of-a-company-t
 
 https://www.youtube.com/watch?v=rdLJNGZvlAA
 
+
+git status
+git add --a
+
+git commit -m "changes on 20221207"
+git remote add origin https://github.com/solrayopriyanka1sep/fono-tally.git
+git push -u origin master

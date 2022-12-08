@@ -1232,7 +1232,9 @@ export class  TallyMastersXML {
       let XMLstr:string = this.XMLHeadImportMasters + 
           `<TALLYMESSAGE xmlns:UDF="TallyUDF">
           <STOCKGROUP NAME="${StockGroup.StockGroupName}" RESERVEDNAME="">
-          <PARENT>${StockGroup.Parent}</PARENT>
+
+          
+          <PARENT>${StockGroup.Parent}</PARENT>          
           <COSTINGMETHOD>Avg. Cost</COSTINGMETHOD>
           <VALUATIONMETHOD>Avg. Price</VALUATIONMETHOD>
           <BASEUNITS/>
@@ -1308,8 +1310,7 @@ export class  TallyMastersXML {
             `<LANGUAGENAME.LIST>
             <NAME.LIST TYPE="String">
             <NAME>${StockGroup.StockGroupName}</NAME>`
-
-            if(StockGroup.Alias != "")  XMLstr = XMLstr + "<NAME>" + StockGroup.Alias + "</NAME>"
+            if( !(!StockGroup.Alias) &&  StockGroup.Alias != "")  XMLstr = XMLstr + "<NAME>" + StockGroup.Alias + "</NAME>"
             XMLstr = XMLstr + 
                 `</NAME.LIST>
                 <LANGUAGEID> 1033</LANGUAGEID>
@@ -1325,7 +1326,6 @@ export class  TallyMastersXML {
             </TALLYMESSAGE>`
         + this.XMLBottomImport
      return XMLstr
-    
     }
 
     DeleteStockGroupXML(StockGroupName:string):string {

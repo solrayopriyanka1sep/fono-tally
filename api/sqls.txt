@@ -29,3 +29,122 @@ INSERT INTO TallyConfig ( FronoCompanyId , TallycompanyName , LedgerMasters , St
 ReceiptsAndPayments , Journals , SalesOrders , PurchaseOrders ) VALUES ( 43, 'Test Company 1', 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 ) ;
 
 
+
+
+
+
+
+
+use ERP ;
+
+select * from CompanyProfile
+select * from TallyConfig
+
+ALTER TABLE TallyConfig ADD TwoStep bit
+
+
+select * from SAAccountGroups
+
+
+select * from AccountGroups
+select * from GLAccount 
+select * from GLAccountGSTLedgers
+
+
+
+select * from BrokerMaster
+
+select * from CustomerMaster
+
+select * from GLAccount where CompanyProfileId = 43 
+
+select * from ItemMaster ;
+
+select * from SAUnitMaster ;
+
+
+select * from SACountryValueList
+select * from SAGSTLedgers
+select * from SAGSTType
+
+select * from DepartmentValueList 
+
+
+SELECT * FROM DepartmentValueList WHERE CompanyProfileId = 43
+
+select * from SACategory
+select * from CategoryMaster
+select * from SubCategoryMaster
+select * from HSNCodeValueList
+select * from SATaxTypeValueList
+select * from TaxTypeValueList
+
+select CategoryId as Id, CompanyProfileId, CategoryName, CategoryDesc,IsActive , 'Primary' as Parent, 1 as DOrder from CategoryMaster
+union
+select A.SubCategoryId as Id, A.CompanyProfileId, A.SubCategoryName, A.SubCategoryDesc, A.IsActive , B.CategoryName  as Parent, 2 as DOrder
+from SubCategoryMaster A , CategoryMaster B
+WHERE A.CategoryId = B.CategoryId
+AND A.CompanyProfileId = B.CompanyProfileId
+AND A.CompanyProfileId = 43
+order by DOrder
+
+
+select * from ItemMaster ;
+
+-- 394
+select A.*, B.UnitShortName, C.DepartmentName  from ItemMaster A
+left join SAUnitMaster B on A.UnitId = B.SAUnitId
+left join DepartmentValueList C on A.DepartmentId = C.DepartmentId AND A.CompanyProfileId = C.CompanyProfileId
+
+
+select A.ItemId, A.ItemCode, A.ItemName, A.ItemDescription, A.ItemType, A.CompanyProfileId, A.IsActive, A.OpeningStock,
+ B.UnitShortName, C.DepartmentName, D.SubCategoryName, E.HSNCode,  
+ CASE WHEN F.Taxability IS NULL THEN G.Taxability ELSE F.Taxability END as Taxability,
+ CASE WHEN F.TaxType IS NULL THEN G.TaxType ELSE F.TaxType END as TaxType,
+ CASE WHEN F.IGST IS NULL THEN G.IGST ELSE F.IGST END as IGST,
+ CASE WHEN F.SGST IS NULL THEN G.SGST ELSE F.SGST END as SGST,
+ CASE WHEN F.CGST IS NULL THEN G.CGST ELSE F.CGST END as CGST,
+ CASE WHEN F.Cess IS NULL THEN G.Cess ELSE F.Cess END as Cess
+ from ItemMaster A
+left join SAUnitMaster B on A.UnitId = B.SAUnitId
+left join DepartmentValueList C on A.DepartmentId = C.DepartmentId AND A.CompanyProfileId = C.CompanyProfileId
+left join SubCategoryMaster D on A.CategoryId = D.CategoryId AND a.SubCategoryId = D.SubCategoryId AND A.CompanyProfileId = D.CompanyProfileId
+left join HSNCodeValueList E on A.HSNCodeId = E.HSNCodeId AND A.CompanyProfileId = E.CompanyProfileId
+left join SATaxTypeValueList F on A.TaxTypeId = F.SATaxTypeId
+left join TaxTypeValueList G on A.TaxTypeId = G.TaxTypeId AND A.CompanyProfileId = G.CompanyProfileId
+WHERE A.CompanyProfileId = 43 ;
+
+
+
+
+
+
+
+
+
+
+
+USE [ERP]
+GO
+
+INSERT INTO SAUnitMaster (SAUnitId, UnitName, UnitShortName, IsActive, IsDelete, DisplayOrder, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate)
+     VALUES ( @SAUnitId , @UnitName, @UnitShortName, @IsActive, @IsDelete, @DisplayOrder, @CreatedBy, @CreatedDate, @ModifiedBy, @ModifiedDate);
+
+
+
+
+UPDATE SAUnitMaster  SET UnitName = @UnitName, UnitShortName = @UnitShortName, IsActive = @IsActive, IsDelete = @IsDelete, DisplayOrder = @DisplayOrder, CreatedBy = @CreatedBy, CreatedDate = @CreatedDate
+      , ModifiedBy = @ModifiedBy, ModifiedDate = @ModifiedDate WHERE SAUnitId = @SAUnitId ;
+
+
+
+
+
+CREATE TABLE TallyConfig ( FronoCompanyId int NOT NULL PRIMARY KEY , TallycompanyName VARCHAR(50) NOT NULL , LedgerMasters bit NOT NULL, StockMasters bit NOT NULL, 
+Locations bit NOT NULL, CostCenters bit NOT NULL, CostCategories bit NOT NULL, SalesAndReturns bit NOT NULL, PurchaseAndReturns bit NOT NULL,
+ReceiptsAndPayments bit NOT NULL, Journals bit NOT NULL, SalesOrders bit NOT NULL, PurchaseOrders bit NOT NULL, TwoStep bit NOT NULL );
+
+INSERT INTO TallyConfig ( FronoCompanyId , TallycompanyName , LedgerMasters , StockMasters , Locations , CostCenters , CostCategories , SalesAndReturns , PurchaseAndReturns ,
+ReceiptsAndPayments , Journals , SalesOrders , PurchaseOrders, TwoStep ) VALUES ( 43, 'Test Company 1', 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0 ) ;
+
+

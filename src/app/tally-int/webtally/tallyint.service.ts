@@ -26,6 +26,8 @@ export class TallyIntService {
   private companyMatched:boolean = false
   isConnectedtoTally:boolean = false
 
+
+
   constructor(private http: HttpClient, private TXMLMast:TallyMastersXML, private TXMLVch:TallyVouchersXML) { 
     this.TXMLMast = new TallyMastersXML()
     this.TXMLVch = new TallyVouchersXML()

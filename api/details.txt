@@ -29,3 +29,51 @@ ReceiptsAndPayments = @ReceiptsAndPayments, Journals = @Journals, SalesOrders = 
 https://code-maze.com/using-dapper-with-asp-net-core-web-api/
 
 
+
+
+
+
+PDC Collection
+----------------
+List : http://103.212.143.188:5001/api/Collections/GetAllDepositCheque/43/0
+
+
+Not Required -- Single: http://103.212.143.188:5001/api/Collections/GetDepositChequeById/   --collectionDepositGroupId
+
+
+Bank Collection
+----------------
+List : http://103.212.143.188:5000/api/CollectionMaster/GetAll/43
+
+Single Bank Collection : http://103.212.143.188:5001/api/Collections/GetInvoiceAdjustedDetails/224
+
+
+
+Purchase
+--------
+http://103.212.143.188:5001/api/PurchaseInvoice/GetAllInvoice/43
+
+
+Single
+http://103.212.143.188:5001/api/PurchaseInvoice/GetCustomerDetails/97
+http://103.212.143.188:5001/api/PurchaseInvoice/GetItemDetails/97
+
+
+
+Purchase Return
+---------------
+List : http://103.212.143.188:5001/api/Notes/GetAllCreditNote/43/10-01-2022/11-30-2022/true
+
+Single Post Method
+http://103.212.143.188:5001/api/Notes/GetCreditNoteTemplate
+
+payload
+{
+    "companyProfileId": 43,
+    "creditNoteId": 190,
+    "branchId": 0
+}
+
+
+
+

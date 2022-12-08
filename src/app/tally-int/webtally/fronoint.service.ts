@@ -13,6 +13,7 @@ export class FronoIntService {
   private fronoURL:string = 'https://localhost:5001/api';
 
   private fronoURL1:string = 'http://103.212.143.188:5000/api';
+  private fronoTranURL1:string = 'http://103.212.143.188:5001/api';
 
   private FronoCompany: number = 0
 
@@ -24,6 +25,34 @@ export class FronoIntService {
   init(FronoCompanyId:number):void{
     this.FronoCompany = FronoCompanyId
   }
+
+  stringToDate(strYYYYMMDD:string):Date {
+    strYYYYMMDD.replace(/-/g,"")
+    const mYear:string = strYYYYMMDD.substring(0, 4)
+    const mMonth:string = strYYYYMMDD.substring(5, 7)
+    const mDay:string = strYYYYMMDD.substring(8, 10)
+    let rtnDt:Date = new Date(Number(mYear), Number(mMonth)-1, Number(mDay) )
+    return rtnDt
+  }
+
+  stringToDate1(strYYYYMMDD:string):Date {
+    const parts ='2014-04-03'.split('-');
+    const rtnDt:Date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])); 
+    return rtnDt
+  }
+
+  private pad2(n:number):string { 
+    return n < 10 ? '0' + n.toString() : n.toString() 
+  }
+
+
+  DateToStr(mDate:Date):string {
+    return mDate.getFullYear().toString() + "-" +
+          this.pad2(mDate.getMonth() + 1) + "-" +
+          this.pad2(mDate.getDate())     
+  }
+
+
 
   getConfig(): Observable<any> {
     return this.http.get<any>(this.fronoURL + '/configData/' + this.FronoCompany )
@@ -114,10 +143,109 @@ export class FronoIntService {
     //return this.http.get<any>(this.fronoURL1 + '/ItemMaster/GetAllItemResponses/' + this.FronoCompany  + "/0" )
 
     return this.http.get<any>(this.fronoURL + '/masterData/GetStockItems/' + this.FronoCompany  )
+  }
 
+  getSalesVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/SalesInvoice/GetAllInvoice/43/12-01-2022/01-31-2023/false
+    fromDtStr = "12-01-2022"
+    ToDtStr = "01-31-2023"
+    return this.http.get<any>(this.fronoTranURL1 + '/SalesInvoice/GetAllInvoice/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/false" )
+  }
+
+  getSingleSalesVoucherData(VoucherNumber:number): Observable<any> {
+    const postData = {
+      "branchId": 0,
+      "companyProfileId": this.FronoCompany,
+      "isPerformaInvoice": false,
+      "salesInvoiceId": VoucherNumber
+    }
+    const headers = { 'content-type': 'application/json'} 
+
+    return this.http.post<any>(this.fronoTranURL1 + '/SalesInvoice/GetInvoiceTemplate' , postData, {'headers':headers})
+  }
+
+  getSalesOrdersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/SalesOrder/GetAllOrder/43/12-01-2022/01-31-2023/true
+    fromDtStr = "12-01-2022"
+    ToDtStr = "01-31-2023"
+    return this.http.get<any>(this.fronoTranURL1 + '/SalesOrder/GetAllOrder/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/true" )
+  }
+
+  getSingleSalesOrderData(OrderNumber:number): Observable<any> {
+    //http://103.212.143.188:5001/api/SalesOrder/GetOrderTemplate
+    const postData = {
+      "branchId": 0,
+      "companyProfileId": this.FronoCompany,
+      "salesOrderId": OrderNumber
+    }
+    const headers = { 'content-type': 'application/json'} 
+
+    return this.http.post<any>(this.fronoTranURL1 + '/SalesOrder/GetOrderTemplate' , postData, {'headers':headers})
+  }
+  
+
+  getJrnlVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/Accounts/GetAllAccounts/43/0/1
+    fromDtStr = "12-01-2022"
+    ToDtStr = "01-31-2023"
+    return this.http.get<any>(this.fronoTranURL1 + '/Accounts/GetAllAccounts/' + this.FronoCompany  + "/0/1"  )
+  }
+
+  getSingleJournalData(VoucherNumber:number): Observable<any> {
+    //http://103.212.143.188:5001/api/Accounts/GetAccountsById/722
+    return this.http.get<any>(this.fronoTranURL1 + '/Accounts/GetAccountsById/' + VoucherNumber ) 
+  }
+
+  
+
+  getReceiptVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/Collections/GetAll/43/12-01-2022/01-31-2023
+    fromDtStr = "12-01-2022"
+    ToDtStr = "01-31-2023"
+    return this.http.get<any>(this.fronoTranURL1 + '/Collections/GetAll/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr  )
+  }
+
+  getSingleReceiptData(VoucherNumber:number): Observable<any> {
+    const postData = {
+      "branchId": 0,
+      "companyProfileId": this.FronoCompany,
+      "isPerformaInvoice": false,
+      "salesInvoiceId": VoucherNumber
+    }
+    const headers = { 'content-type': 'application/json'} 
+
+    return this.http.post<any>(this.fronoTranURL1 + '/SalesInvoice/GetInvoiceTemplate' , postData, {'headers':headers})
   }
 
 
+ 
+
+
+
+  getPurchaseVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/PurchaseInvoice/GetAllInvoice/43
+    fromDtStr = "12-01-2022"
+    ToDtStr = "01-31-2023"
+    return this.http.get<any>(this.fronoTranURL1 + '/SalesInvoice/GetAllInvoice/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/false" )
+  }
+
+  getSinglePurchaseVoucherData(VoucherNumber:number): Observable<any> {
+    const postData = {
+      "branchId": 0,
+      "companyProfileId": this.FronoCompany,
+      "isPerformaInvoice": false,
+      "salesInvoiceId": VoucherNumber
+    }
+    const headers = { 'content-type': 'application/json'} 
+
+    return this.http.post<any>(this.fronoTranURL1 + '/SalesInvoice/GetInvoiceTemplate' , postData, {'headers':headers})
+  }
+ 
+
+
+
+  
+  
   
   
 
