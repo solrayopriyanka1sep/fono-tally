@@ -1278,7 +1278,7 @@ export class TallyIntService {
     });
   }
 
-  SalesReturnVoucher(SalesReturnData:VoucherData ) {
+  CreditNoteVoucher(SalesReturnData:VoucherData ) {
     return new Observable<any>((observer) => {
       if(this.companyMatched == false ) {          
         const rtnVal = { Error : true, Message : "Company opened in Tally does not match with current Company", data : "" }
@@ -1315,7 +1315,7 @@ export class TallyIntService {
     });
   }
 
-  PurchaseReturnVoucher(PurchaseReturnData:VoucherData ) {
+  DebitNoteVoucher(PurchaseReturnData:VoucherData ) {
     return new Observable<any>((observer) => {
       if(this.companyMatched == false ) {          
         const rtnVal = { Error : true, Message : "Company opened in Tally does not match with current Company", data : "" }

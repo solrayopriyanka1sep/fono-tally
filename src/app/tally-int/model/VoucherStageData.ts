@@ -12,10 +12,14 @@ export class VoucherStageData {
     VoucherRef:string = ""
     VoucherRefDate:string = ""
     HeaderLedger:string = ""
+    PartyLedger:string = ""
+//    ReceiptStatus:number = 0
 
     isSelected:boolean = false 
     Status:string = "" 
     Message:string = ""
+
+    isPDCCollection:boolean = false   //In case of PDC collection do not check for child records
 
 
 }

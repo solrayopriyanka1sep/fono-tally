@@ -36,10 +36,13 @@ export class FronoIntService {
   }
 
   stringToDate1(strYYYYMMDD:string):Date {
-    const parts ='2014-04-03'.split('-');
+    const parts = strYYYYMMDD.split('-');
     const rtnDt:Date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])); 
     return rtnDt
   }
+
+
+
 
   private pad2(n:number):string { 
     return n < 10 ? '0' + n.toString() : n.toString() 
@@ -52,6 +55,17 @@ export class FronoIntService {
           this.pad2(mDate.getDate())     
   }
 
+  DateToStrMMDDYYYY(mDate:Date):string {
+    return this.pad2(mDate.getMonth() + 1) + "-" +
+            this.pad2(mDate.getDate()) + "-" +    
+            mDate.getFullYear().toString()           
+  }
+
+  strDateToStrMMDDYYYY(strYYYYMMDD:string):string {
+    const parts = strYYYYMMDD.split('-');
+    const rtnDt =  parts[1] + "-" + parts[2] + "-" + parts[0]    
+    return rtnDt
+  }
 
 
   getConfig(): Observable<any> {
@@ -145,10 +159,13 @@ export class FronoIntService {
     return this.http.get<any>(this.fronoURL + '/masterData/GetStockItems/' + this.FronoCompany  )
   }
 
+
+
+
+
   getSalesVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
     //http://103.212.143.188:5001/api/SalesInvoice/GetAllInvoice/43/12-01-2022/01-31-2023/false
-    fromDtStr = "12-01-2022"
-    ToDtStr = "01-31-2023"
+  
     return this.http.get<any>(this.fronoTranURL1 + '/SalesInvoice/GetAllInvoice/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/false" )
   }
 
@@ -166,8 +183,6 @@ export class FronoIntService {
 
   getSalesOrdersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
     //http://103.212.143.188:5001/api/SalesOrder/GetAllOrder/43/12-01-2022/01-31-2023/true
-    fromDtStr = "12-01-2022"
-    ToDtStr = "01-31-2023"
     return this.http.get<any>(this.fronoTranURL1 + '/SalesOrder/GetAllOrder/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/true" )
   }
 
@@ -186,8 +201,6 @@ export class FronoIntService {
 
   getJrnlVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
     //http://103.212.143.188:5001/api/Accounts/GetAllAccounts/43/0/1
-    fromDtStr = "12-01-2022"
-    ToDtStr = "01-31-2023"
     return this.http.get<any>(this.fronoTranURL1 + '/Accounts/GetAllAccounts/' + this.FronoCompany  + "/0/1"  )
   }
 
@@ -198,49 +211,76 @@ export class FronoIntService {
 
   
 
-  getReceiptVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
-    //http://103.212.143.188:5001/api/Collections/GetAll/43/12-01-2022/01-31-2023
+  /*
+  getPDCCollectionList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/Collections/GetAllDepositCheque/43/0
     fromDtStr = "12-01-2022"
     ToDtStr = "01-31-2023"
+    return this.http.get<any>(this.fronoTranURL1 + '/Collections/GetAllDepositCheque/' + this.FronoCompany  + "/0"  )
+  }
+  */
+
+  getBankCollectionList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/Collections/GetAll/43/12-01-2022/12-31-2022
     return this.http.get<any>(this.fronoTranURL1 + '/Collections/GetAll/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr  )
   }
-
+ 
   getSingleReceiptData(VoucherNumber:number): Observable<any> {
-    const postData = {
-      "branchId": 0,
-      "companyProfileId": this.FronoCompany,
-      "isPerformaInvoice": false,
-      "salesInvoiceId": VoucherNumber
-    }
+    //http://103.212.143.188:5001/api/Collections/GetInvoiceAdjustedDetails/224
     const headers = { 'content-type': 'application/json'} 
 
-    return this.http.post<any>(this.fronoTranURL1 + '/SalesInvoice/GetInvoiceTemplate' , postData, {'headers':headers})
+    return this.http.get<any>(this.fronoTranURL1 + '/Collections/GetInvoiceAdjustedDetails/' + VoucherNumber )
   }
-
-
- 
 
 
 
   getPurchaseVouchersList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
     //http://103.212.143.188:5001/api/PurchaseInvoice/GetAllInvoice/43
-    fromDtStr = "12-01-2022"
-    ToDtStr = "01-31-2023"
-    return this.http.get<any>(this.fronoTranURL1 + '/SalesInvoice/GetAllInvoice/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/false" )
+    return this.http.get<any>(this.fronoTranURL1 + '/PurchaseInvoice/GetAllInvoice/' + this.FronoCompany  ) //+ "/" + fromDtStr + "/" + ToDtStr + "/false" )
   }
 
   getSinglePurchaseVoucherData(VoucherNumber:number): Observable<any> {
+    //http://103.212.143.188:5001/api/PurchaseInvoice/GetItemDetails/97
+
+    return this.http.get<any>(this.fronoTranURL1 + '/PurchaseInvoice/GetItemDetails/' + VoucherNumber)
+  }
+ 
+
+  getCreditNotesList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/Notes/GetAllCreditNote/43/11-01-2022/12-31-2022/true
+    return this.http.get<any>(this.fronoTranURL1 + '/Notes/GetAllCreditNote/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr + "/true" )
+  }
+
+  getSingleCreditNoteData(VoucherNumber:number): Observable<any> {
+    //http://103.212.143.188:5001/api/Notes/GetCreditNoteTemplate
     const postData = {
       "branchId": 0,
       "companyProfileId": this.FronoCompany,
-      "isPerformaInvoice": false,
-      "salesInvoiceId": VoucherNumber
+      "creditNoteId": VoucherNumber
     }
     const headers = { 'content-type': 'application/json'} 
 
-    return this.http.post<any>(this.fronoTranURL1 + '/SalesInvoice/GetInvoiceTemplate' , postData, {'headers':headers})
+    return this.http.post<any>(this.fronoTranURL1 + '/Notes/GetCreditNoteTemplate' , postData, {'headers':headers})
   }
  
+
+  getDebitNotesList(fromDtStr:string = "", ToDtStr:string = ""): Observable<any> {
+    //http://103.212.143.188:5001/api/Notes/GetAllDebitNote/43/10-01-2022/11-30-2022
+    return this.http.get<any>(this.fronoTranURL1 + '/Notes/GetAllDebitNote/' + this.FronoCompany  + "/" + fromDtStr + "/" + ToDtStr  )
+  }
+
+  getSingleDebitNoteData(VoucherNumber:number): Observable<any> {
+    //http://103.212.143.188:5001/api/Notes/GetDebitNoteTemplate
+    const postData = {
+      "branchId": 0,
+      "companyProfileId": this.FronoCompany,
+      "debitNoteId": VoucherNumber
+    }
+    const headers = { 'content-type': 'application/json'} 
+
+    return this.http.post<any>(this.fronoTranURL1 + '/Notes/GetDebitNoteTemplate' , postData, {'headers':headers})
+  }
+
 
 
 

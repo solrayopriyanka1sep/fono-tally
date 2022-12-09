@@ -15,6 +15,19 @@
 <div class="panels">
     <div class="panel" id="one-panel">
         <div class="panel-title" style="margin-bottom: 10px;">Import Masters Data</div>
+
+        <div style="padding: 5px;">
+            <label for="fromDt">Show Master Types:</label> 
+            <select [(ngModel)]="selectedMasterType" style="margin-left: 10px ;">
+                <option *ngFor="let MastName of MastersTypeList" name="ActionName" [value]="MastName"   >
+                    {{MastName}}
+                </option>
+            </select>                    
+
+            <!-- <button (click)="getFronoVoucherstoExport()" style="margin-left: 10px ;">Filter</button> -->
+        </div>
+
+        
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -28,18 +41,20 @@
                 </thead>
                  <tbody>
                     <tr *ngFor="let maprow of TallyData.MastersStageData; let i = index">
-                        <td class="filterable-cell" style="width: 15%;" >{{maprow.MasterType}}</td>
-                        <td class="filterable-cell" style="width: 20%;">{{maprow.MasterName}}</td>
-                        <td class="filterable-cell" style="width: 10%;">
-                                <select [(ngModel)]="maprow.Action" >
-                                    <option *ngFor="let ActionName of ActionList" name="ActionName" [value]="ActionName"   >
-                                        {{ActionName}}
-                                    </option>
-                                </select>                    
-                        </td>
-                        <td class="filterable-cell" style="width: 10%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
-                        <td class="filterable-cell" style="width: 10%;">:{{maprow.Status}} </td>
-                        <td class="filterable-cell" style="width: 30%;">:{{maprow.Message}} </td>
+                        <div *ngIf="selectedMasterType == 'All' || maprow.MasterType == selectedMasterType" >
+                            <td class="filterable-cell" style="width: 15%;" >{{maprow.MasterType}}</td>
+                            <td class="filterable-cell" style="width: 20%;">{{maprow.MasterName}}</td>
+                            <td class="filterable-cell" style="width: 10%;">
+                                    <select [(ngModel)]="maprow.Action" >
+                                        <option *ngFor="let ActionName of ActionList" name="ActionName" [value]="ActionName"   >
+                                            {{ActionName}}
+                                        </option>
+                                    </select>                    
+                            </td>
+                            <td class="filterable-cell" style="width: 10%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
+                            <td class="filterable-cell" style="width: 10%;">:{{maprow.Status}} </td>
+                            <td class="filterable-cell" style="width: 30%;">:{{maprow.Message}} </td>
+                        </div>
                     </tr>
                 </tbody>                
             </table>
@@ -57,6 +72,13 @@
         <div style="padding: 5px;">
             <label for="fromDt">From Date:</label><input type="date" id="fromDt" [(ngModel)]="mFromDt" required > 
             <label for="toDt" style="padding-left: 20px;">To Date:</label><input type="date" id="toDt" [(ngModel)]="mToDt" required >
+            
+            <select [(ngModel)]="selectedVoucherType" style="margin-left: 10px ;">
+                <option *ngFor="let VchrName of VoucherTypeList" name="ActionName" [value]="VchrName"   >
+                    {{VchrName}}
+                </option>
+            </select>                    
+
             <button (click)="getFronoVoucherstoExport()" style="margin-left: 10px ;">Show Vouchers Data</button>
         </div>
             <table class="table table-striped">

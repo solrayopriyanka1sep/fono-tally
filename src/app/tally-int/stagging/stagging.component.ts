@@ -7,6 +7,8 @@ import { FronoIntService } from '../webtally/fronoint.service';
 import { MastersStageData } from '../model/MastersStageData';
 import { VoucherStageData } from '../model/VoucherStageData';
 import {  TALLYGROUP , LedgerInfo, ItemInfo, StockGroupInfo, VoucherData, LedgerEntry, InventoryEntry } from '../webtally/tallyInterfaces';
+import { CanceledError } from 'axios';
+import { clear } from 'console';
 //import { Observable } from 'rxjs';
 //import * as e from 'cors';
 
@@ -21,6 +23,12 @@ export class StaggingComponent implements OnInit {
   TallyData:TallyDataService
   MasterTypes:string[] = []
   ActionList:string[] = []
+  VoucherTypeList:string[]=[]
+  selectedVoucherType = "All"
+
+  MastersTypeList:string[]=[]
+  selectedMasterType = "All"
+
 //  UOMList:any[] = []
 //  stockGroupsList:any[] = []
 //  stockCategoriesList:any[] = []
@@ -34,8 +42,11 @@ export class StaggingComponent implements OnInit {
     this.TallyData = this.TallyDataSrv
     this.MasterTypes = this.TallyData.MasterTypes
     this.ActionList = ['Create', 'Modify', 'Delete' ]
+    this.VoucherTypeList = ['All', 'Sales', 'Purchase', 'Debit Note', 'Credit Note', 'Receipt', 'Payment', 'Journal']
+    this.MastersTypeList = ['All', 'Ledger Groups', 'Units', 'Stock Groups', 'Stock Categories', 'Stock Items', 'Locations', 'Cost Centers', 'Cost Categories' ]
   }
 
+ 
   ngOnInit(): void {
     //this.TallyData.ExportImport = 0
     //console.log(this.TallyData.ExportImport)
@@ -43,7 +54,6 @@ export class StaggingComponent implements OnInit {
     this.TallyData.MastersStageData  = []
     //Collect frono data to be exported to Tally
     if(this.TallyData.ExportImport == 0){
-
 
       this.FronoAPI.getUOM().subscribe({
         next: (res:any) => {
@@ -60,12 +70,13 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });              
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           },
@@ -90,12 +101,13 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
@@ -116,12 +128,13 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
@@ -145,12 +158,13 @@ export class StaggingComponent implements OnInit {
                 } 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
@@ -171,12 +185,13 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
@@ -201,12 +216,13 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
@@ -229,12 +245,13 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
@@ -269,17 +286,17 @@ export class StaggingComponent implements OnInit {
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
+              console.log(res)
               //dataRow.Status = "Failed" 
               //dataRow.Message = res.messageText
             }              
           },
           error: error => {
-              console.error( error);
+              console.log( error);
               //dataRow.Status = "Failed" 
               //dataRow.Message = error.messageText
           }                
       })          
-
     
      this.TallyDataSrv.vouchersFromDate.setDate(this.TallyDataSrv.vouchersToDate.getDate() - 30) 
      this.mFromDt = this.datePipe.transform(this.TallyDataSrv.vouchersFromDate, 'yyyy-MM-dd');
@@ -291,21 +308,87 @@ export class StaggingComponent implements OnInit {
 
   getFronoVoucherstoExport(){
     //Start Getting Vouchers Data
+    //console.log(typeof this.mFromDt)
+    const fromDtMMDDYYYY = this.FronoAPI.strDateToStrMMDDYYYY(this.mFromDt)
+    const toDtMMDDYYYY = this.FronoAPI.strDateToStrMMDDYYYY(this.mToDt)
+    this.TallyData.TransactionsStageData = []
 
-    this.FronoAPI.getSalesVouchersList().subscribe({        
+    if(this.selectedVoucherType == "All" || this.selectedVoucherType == "Sales" ) {
+      this.FronoAPI.getSalesVouchersList(fromDtMMDDYYYY, toDtMMDDYYYY).subscribe({        
+        next: (res:any) => {
+            // if(this.UOMList.length == 0) {          }
+            if(res.messageText == "") {
+              res.data.forEach( (item:any) => {
+                  let mData = new VoucherStageData()
+                  mData.Action = "Create"
+                  mData.VoucherType = "Sales"
+                  mData.VoucherNumber = item.invoiceId
+                  mData.VoucherDate = item.invoiceDate.substring(0, 10)
+                  mData.VoucherAmt = item.invoiceTotal
+                  mData.VoucherRef = item.invoiceNumber
+                  mData.VoucherRefDate = item.invoiceDate.substring(0, 10)
+                  mData.HeaderLedger = item.customerName            
+                  this.TallyData.TransactionsStageData.push(mData) 
+              });
+            } else {
+              console.log(res)
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.log( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })          
+    }
+
+    if(this.selectedVoucherType == "All" || this.selectedVoucherType == "Journal" ) {
+      this.FronoAPI.getJrnlVouchersList(fromDtMMDDYYYY, toDtMMDDYYYY).subscribe({        
+        next: (res:any) => {
+            if(res.messageText == "") {
+              res.data.forEach( (item:any) => {
+                  let mData = new VoucherStageData()
+                  mData.Action = "Create"
+                  mData.VoucherType = "Journal"
+                  mData.VoucherNumber = item.accountsId
+                  mData.VoucherDate = item.entryDate.substring(0, 10)
+                  mData.VoucherAmt = 0
+                  mData.VoucherRef = item.voucherNo
+                  mData.VoucherRefDate = item.entryDate.substring(0, 10)
+                  this.TallyData.TransactionsStageData.push(mData) 
+              });
+            } else {
+              console.log(res)
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.log( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+    }
+
+    //Receipts
+/*    
+    this.FronoAPI.getPDCCollectionList().subscribe({        
       next: (res:any) => {
-          // if(this.UOMList.length == 0) {          }
           if(res.messageText == "") {
             res.data.forEach( (item:any) => {
                 let mData = new VoucherStageData()
                 mData.Action = "Create"
-                mData.VoucherType = "Sales"
-                mData.VoucherNumber = item.invoiceId
-                mData.VoucherDate = item.invoiceDate.substring(0, 10)
-                mData.VoucherAmt = item.invoiceTotal
-                mData.VoucherRef = item.invoiceNumber
-                mData.VoucherRefDate = item.invoiceDate.substring(0, 10)
-                mData.HeaderLedger = item.customerName            
+                mData.VoucherType = "Receipt"
+                mData.VoucherNumber = item.collectionId
+                mData.VoucherDate = item.depositDate.substring(0, 10)
+                mData.VoucherAmt = item.amount
+                mData.VoucherRef = item.collectionNumber                
+                mData.VoucherRefDate = item.depositDate.substring(0, 10)
+                mData.HeaderLedger = item.bankDisplayName
+                mData.isPDCCollection = true
                 this.TallyData.TransactionsStageData.push(mData) 
             });
           } else {
@@ -318,34 +401,139 @@ export class StaggingComponent implements OnInit {
             //dataRow.Status = "Failed" 
             //dataRow.Message = error.messageText
         }                
-    })          
+    })
+*/
+
+    if(this.selectedVoucherType == "All" || this.selectedVoucherType == "Receipt" ) {
+      this.FronoAPI.getBankCollectionList(fromDtMMDDYYYY, toDtMMDDYYYY).subscribe({        
+        next: (res:any) => {
+            if(res.messageText == "") {
+              res.data.forEach( (item:any) => {
+                // Receipt Status : 1 - pending,  2 - Canceled  3 - delete,  4-  Deposit  5 - clear 6 - Bounce
+                if(item.statusType == 4 || item.statusType == 5 ) {                              
+                  let mData = new VoucherStageData()
+                  mData.Action = "Create"
+                  mData.VoucherType = "Receipt"
+                  mData.VoucherNumber = item.collectionId
+                  mData.VoucherDate = item.collectionDate.substring(0, 10)
+                  mData.VoucherAmt = item.amount
+                  mData.VoucherRef = item.collectionNumber
+                  mData.VoucherRefDate = item.collectionDate.substring(0, 10)
+                  mData.HeaderLedger = item.bankDisplayName
+                  mData.PartyLedger = item.companyName
+                  this.TallyData.TransactionsStageData.push(mData) 
+                }
+              });
+            } else {
+              console.log(res)
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.log( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+    }  
+
+    if(this.selectedVoucherType == "All" || this.selectedVoucherType == "Purchase" ) {
+      this.FronoAPI.getPurchaseVouchersList(fromDtMMDDYYYY, toDtMMDDYYYY).subscribe({        
+        next: (res:any) => {
+            if(res.messageText == "") {
+              console.log(res)
+              res.data.forEach( (item:any) => {
+                  let mData = new VoucherStageData()
+                  mData.Action = "Create"
+                  mData.VoucherType = "Purchase"
+                  mData.VoucherNumber = item.invoiceId
+                  mData.VoucherDate = item.invoiceDate.substring(0, 10)
+                  mData.VoucherAmt = item.invoiceTotal
+                  mData.VoucherRef = item.invoiceNumber
+                  mData.VoucherRefDate = item.invoiceDate.substring(0, 10)
+                  mData.HeaderLedger = item.vendorName
+                  mData.PartyLedger = item.vendorName
+                  this.TallyData.TransactionsStageData.push(mData) 
+              });
+            } else {
+              console.log(res)
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.log( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+    }
+
+    if(this.selectedVoucherType == "All" || this.selectedVoucherType == "Credit Note" ) {
+      this.FronoAPI.getCreditNotesList(fromDtMMDDYYYY, toDtMMDDYYYY).subscribe({        
+        next: (res:any) => {
+            if(res.messageText == "") {
+              res.data.forEach( (item:any) => {
+                  let mData = new VoucherStageData()
+                  mData.Action = "Create"
+                  mData.VoucherType = "Credit Note"
+                  mData.VoucherNumber = item.creditNoteId
+                  mData.VoucherDate = item.creditNoteDate.substring(0, 10)
+                  mData.VoucherAmt = item.creditNoteTotal
+                  mData.VoucherRef = item.creditNoteNumber
+                  mData.VoucherRefDate = item.creditNoteDate.substring(0, 10)
+                  mData.HeaderLedger = item.customerName
+                  mData.PartyLedger = item.customerName
+                  this.TallyData.TransactionsStageData.push(mData) 
+              });
+            } else {
+              console.log(res)
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.log( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+    }
+
+    if(this.selectedVoucherType == "All" || this.selectedVoucherType == "Debit Note" ) {
+      this.FronoAPI.getDebitNotesList(fromDtMMDDYYYY, toDtMMDDYYYY).subscribe({        
+        next: (res:any) => {
+            if(res.messageText == "") {
+              res.data.forEach( (item:any) => {
+                  let mData = new VoucherStageData()
+                  mData.Action = "Create"
+                  mData.VoucherType = "Debit Note"
+                  mData.VoucherNumber = item.debitNoteId
+                  mData.VoucherDate = item.debitNoteDate.substring(0, 10)
+                  mData.VoucherAmt = item.debitNoteTotal
+                  mData.VoucherRef = item.debitNoteNumber
+                  mData.VoucherRefDate = item.debitNoteDate.substring(0, 10)
+                  mData.HeaderLedger = item.customerName
+                  mData.PartyLedger = item.customerName
+                  this.TallyData.TransactionsStageData.push(mData) 
+              });
+            } else {
+              console.log(res)
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = res.messageText
+            }              
+          },
+          error: error => {
+              console.log( error);
+              //dataRow.Status = "Failed" 
+              //dataRow.Message = error.messageText
+          }                
+      })
+    }
 
 
-    this.FronoAPI.getJrnlVouchersList().subscribe({        
-      next: (res:any) => {
-          if(res.messageText == "") {
-            res.data.forEach( (item:any) => {
-                let mData = new VoucherStageData()
-                mData.Action = "Create"
-                mData.VoucherType = "Journal"
-                mData.VoucherNumber = item.accountsId
-                mData.VoucherDate = item.entryDate.substring(0, 10)
-                mData.VoucherAmt = 0
-                mData.VoucherRef = item.voucherNo
-                mData.VoucherRefDate = item.entryDate.substring(0, 10)
-                this.TallyData.TransactionsStageData.push(mData) 
-            });
-          } else {
-            //dataRow.Status = "Failed" 
-            //dataRow.Message = res.messageText
-          }              
-        },
-        error: error => {
-            console.error( error);
-            //dataRow.Status = "Failed" 
-            //dataRow.Message = error.messageText
-        }                
-    })          
+
 
 
   }
@@ -801,6 +989,166 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Receipt"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+        this.FronoAPI.getSingleReceiptData(VchDataRow.VoucherNumber).subscribe({
+          next: (res:any) => {
+            if(res.messageText == "") {
+              let VchData:VoucherData  = new VoucherData()
+              VchData.Action = "Create"
+              VchData.VoucherTypeName = "Receipt"
+  //              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+              //Temp change date to 1st of Dec 2021  
+              VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+              VchData.VoucherNumber = VchDataRow.VoucherNumber
+              VchData.VoucherRef = VchDataRow.VoucherRef
+              VchData.VoucherRefDate = VchDataRow.VoucherRefDate
+              VchData.Narration  = "Created from Frono API" 
+      
+              let LedgerEntriesData: LedgerEntry[] = []
+  //            let InventoryEntriesData: InventoryEntry[] = []           
+              for (const itemsRow of res.data) {
+                //let ledInfo:any[] = this.TallyData.MastersStageData.filter( (el:any) => el.MasterType == "Ledgers" && el.Id == itemsRow.ledgerAccountId )                
+                LedgerEntriesData.push({    
+                  LedgerName :  VchDataRow.PartyLedger,
+                  CashLedger  : "" ,
+                  DebitCredit : "DR",
+                  LineAmount  : itemsRow.collectionAmount ,
+                  BillRef : itemsRow.invoiceNumber
+                })
+              } 
+              VchData.LedgerEntriesData = LedgerEntriesData
+
+              this.TallyAPI.ReceiptVoucher(VchData ).subscribe({
+                next: (response:any) => {
+                    if(response.Error == false) {
+                      VchDataRow.Status = "Success" 
+                      VchDataRow.Message = response.data
+                      //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                    } else {
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = response.Message
+                    }
+                  },
+                  error: error => {
+                      console.error( error);
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = error.messageText
+                  },
+              })            
+            }
+          },
+          error: error => {
+              console.error( error);
+              VchDataRow.Status = "Failed" 
+              VchDataRow.Message = error.messageText
+          },
+        })      
+      }
+
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Credit Note"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+        this.FronoAPI.getSingleCreditNoteData(VchDataRow.VoucherNumber).subscribe({
+        next: (res:any) => {
+           if(res.messageText == "") {
+            let VchData:VoucherData  = new VoucherData()
+            VchData.Action = "Create"
+            VchData.VoucherTypeName = "Credit Note"
+//              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+            //Temp change date to 1st of Dec 2021  
+            VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+            VchData.VoucherNumber = VchDataRow.VoucherNumber
+            VchData.VoucherRef = VchDataRow.VoucherRef             
+            VchData.HeaderLedger = VchDataRow.HeaderLedger
+            VchData.Narration  = "Created from Frono API" 
+            VchData.VoucherInvoiceView ="Invoice Voucher View"
+            VchData.VoucherEntryMode="Item Invoice"
+    
+            let LedgerEntriesData: LedgerEntry[] = []
+            let InventoryEntriesData: InventoryEntry[] = []
+            for (const itemsRow of res.data.itemDetails) {
+              InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: itemsRow.accountName })
+            } 
+            VchData.InventoryEntriesData = InventoryEntriesData
+            this.TallyAPI.CreditNoteVoucher(VchData  ).subscribe({
+              next: (response:any) => {
+                  console.log(response)
+                  if(response.Error == false) {
+                    VchDataRow.Status = "Success" 
+                    VchDataRow.Message = response.data
+                    //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                  } else {
+                    VchDataRow.Status = "Failed" 
+                    VchDataRow.Message = response.Message
+                  }
+                },
+                error: error => {
+                    console.error( error);
+                    VchDataRow.Status = "Failed" 
+                    VchDataRow.Message = error.messageText
+                },
+            })            
+          }
+        },
+          error: error => {
+              console.error( error);
+              VchDataRow.Status = "Failed" 
+              VchDataRow.Message = error.messageText
+          },
+      })      
+      }
+
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Debit Note"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+        this.FronoAPI.getSingleDebitNoteData(VchDataRow.VoucherNumber).subscribe({
+        next: (res:any) => {
+           if(res.messageText == "") {
+            let VchData:VoucherData  = new VoucherData()
+            VchData.Action = "Create"
+            VchData.VoucherTypeName = "Debit Note"
+//              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+            //Temp change date to 1st of Dec 2021  
+            VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+            VchData.VoucherNumber = VchDataRow.VoucherNumber
+            VchData.VoucherRef = VchDataRow.VoucherRef             
+            VchData.HeaderLedger = VchDataRow.HeaderLedger
+            VchData.Narration  = "Created from Frono API" 
+            VchData.VoucherInvoiceView ="Invoice Voucher View"
+            VchData.VoucherEntryMode="Item Invoice"
+    
+            let LedgerEntriesData: LedgerEntry[] = []
+            let InventoryEntriesData: InventoryEntry[] = []
+            for (const itemsRow of res.data.itemDetails) {
+              InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: itemsRow.accountName })
+            } 
+            VchData.InventoryEntriesData = InventoryEntriesData
+            this.TallyAPI.DebitNoteVoucher(VchData  ).subscribe({
+              next: (response:any) => {
+                  console.log(response)
+                  if(response.Error == false) {
+                    VchDataRow.Status = "Success" 
+                    VchDataRow.Message = response.data
+                    //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                  } else {
+                    VchDataRow.Status = "Failed" 
+                    VchDataRow.Message = response.Message
+                  }
+                },
+                error: error => {
+                    console.error( error);
+                    VchDataRow.Status = "Failed" 
+                    VchDataRow.Message = error.messageText
+                },
+            })            
+          }
+        },
+          error: error => {
+              console.error( error);
+              VchDataRow.Status = "Failed" 
+              VchDataRow.Message = error.messageText
+          },
+      })      
+      }
       
 
     }    

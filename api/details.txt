@@ -5,6 +5,11 @@ teamsolrayo99@gmail.com
 Admin@123
 
 
+fronocloud.com
+Test@gmail.com
+testAdmin@123#
+
+
 http://localhost:5000/api/AccountGroups/GetAllAccountGroups/43
 
 POST http://localhost:5000/api/AccountGroups/AddUpdate
@@ -45,7 +50,10 @@ Bank Collection
 ----------------
 List : http://103.212.143.188:5000/api/CollectionMaster/GetAll/43
 
+http://103.212.143.188:5001/api/Collections/GetAll/43/12-01-2022/12-31-2022
+
 Single Bank Collection : http://103.212.143.188:5001/api/Collections/GetInvoiceAdjustedDetails/224
+                 https://fronocloud.com/transactionapi/api/Collections/GetInvoiceAdjustedDetails/588
 
 
 

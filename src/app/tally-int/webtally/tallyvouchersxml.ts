@@ -919,6 +919,8 @@ export class TallyVouchersXML {
     return rtnSTR
   }
 
+
+  
   // Sales Return
   CreditNoteVouchXML(SalesReturnData:VoucherData):string {
     let VoucherTotal:number = 0
@@ -933,7 +935,6 @@ export class TallyVouchersXML {
     const sGUID = "AVSolutions-" + SalesReturnData.VoucherTypeName + "-" + VchrDate + "-" + SalesReturnData.VoucherNumber
 
     let rtnSTR :string = ""
-
 //    let VoucherTotal = 0
 //    const HeaderLedger = STR2XML(HeaderLedger)
 //    const sGUID = STR2XML("AVSolutions-" + SalesReturnData.VoucherTypeName + "-" + SalesReturnData.VoucherDate + "-" + SalesReturnData.VoucherNumber)
@@ -1052,7 +1053,7 @@ export class TallyVouchersXML {
     //            '                rtnSTR = rtnSTR + "       <ISPRIMARYITEM>No</ISPRIMARYITEM>"
     //            '                rtnSTR = rtnSTR + "       <ISSCRAP>No</ISSCRAP>"
         rtnSTR = rtnSTR + "  <RATE>" + InventoryEntry.Rate + "/" + this.STR2XML(InventoryEntry.UOM) + "</RATE>"
-        rtnSTR = rtnSTR + "  <AMOUNT>" + InventoryEntry.LineAmount + "</AMOUNT>"
+        rtnSTR = rtnSTR + "  <AMOUNT>-" + InventoryEntry.LineAmount + "</AMOUNT>"
         rtnSTR = rtnSTR + "  <ACTUALQTY>" + InventoryEntry.Qty + " " + this.STR2XML(InventoryEntry.UOM) + "</ACTUALQTY>"
         rtnSTR = rtnSTR + "  <BILLEDQTY>" + InventoryEntry.Qty + " " + this.STR2XML(InventoryEntry.UOM) + "</BILLEDQTY>"
         rtnSTR = rtnSTR + "  <BATCHALLOCATIONS.LIST>"
@@ -1078,7 +1079,7 @@ export class TallyVouchersXML {
         rtnSTR = rtnSTR + "    <REMOVEZEROENTRIES>No</REMOVEZEROENTRIES>"
         rtnSTR = rtnSTR + "    <ISPARTYLEDGER>No</ISPARTYLEDGER>"
         rtnSTR = rtnSTR + "    <ISLASTDEEMEDPOSITIVE>Yes</ISLASTDEEMEDPOSITIVE>"
-        rtnSTR = rtnSTR + "    <AMOUNT>" + InventoryEntry.LineAmount + "</AMOUNT>"
+        rtnSTR = rtnSTR + "    <AMOUNT>-" + InventoryEntry.LineAmount + "</AMOUNT>"
         rtnSTR = rtnSTR + "    <RATEDETAILS.LIST>"
         rtnSTR = rtnSTR + "      <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>"
         rtnSTR = rtnSTR + "    </RATEDETAILS.LIST>"
@@ -1096,7 +1097,7 @@ export class TallyVouchersXML {
       });  
     }                            
     rtnSTR = rtnSTR + "</VOUCHER>"
-    rtnSTR = this.hdrXML + rtnSTR + this.bottomXML
+    rtnSTR = this.hdrXML + rtnSTR + this.bottomXML    
     return rtnSTR
   }
 
@@ -1182,15 +1183,15 @@ export class TallyVouchersXML {
     rtnSTR = rtnSTR + "<LEDGERENTRIES.LIST>"
     rtnSTR = rtnSTR + "  <LEDGERNAME>" + PurchaseReturnData.HeaderLedger + "</LEDGERNAME>"
     rtnSTR = rtnSTR + "  <GSTCLASS/>"
-    rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>"
+    rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>"
     rtnSTR = rtnSTR + "  <LEDGERFROMITEM>No</LEDGERFROMITEM>"
     rtnSTR = rtnSTR + "  <ISPARTYLEDGER>Yes</ISPARTYLEDGER>"
-    rtnSTR = rtnSTR + "  <ISLASTDEEMEDPOSITIVE>No</ISLASTDEEMEDPOSITIVE>"
-    rtnSTR = rtnSTR + "  <AMOUNT>" + VoucherTotal + "</AMOUNT>"     
+    rtnSTR = rtnSTR + "  <ISLASTDEEMEDPOSITIVE>Yes</ISLASTDEEMEDPOSITIVE>"
+    rtnSTR = rtnSTR + "  <AMOUNT>-" + VoucherTotal + "</AMOUNT>"     
     rtnSTR = rtnSTR + " <BILLALLOCATIONS.LIST>"
     rtnSTR = rtnSTR + "   <NAME>" + PurchaseReturnData.VoucherNumber + "</NAME>"
     rtnSTR = rtnSTR + "   <BILLTYPE>New Ref</BILLTYPE>"
-    rtnSTR = rtnSTR + "   <AMOUNT>" + VoucherTotal + "</AMOUNT>"
+    rtnSTR = rtnSTR + "   <AMOUNT>-" + VoucherTotal + "</AMOUNT>"
 //'                rtnSTR = rtnSTR + "   <INTERESTCOLLECTION.LIST>        </INTERESTCOLLECTION.LIST>"
 //'                rtnSTR = rtnSTR + "   <STBILLCATEGORIES.LIST>        </STBILLCATEGORIES.LIST>"
     rtnSTR = rtnSTR + " </BILLALLOCATIONS.LIST>"
@@ -1204,13 +1205,13 @@ export class TallyVouchersXML {
       rtnSTR = rtnSTR + "  <LEDGERNAME>" + this.STR2XML(LedgerEntry.LedgerName) + "</LEDGERNAME>"
       rtnSTR = rtnSTR + "  <METHODTYPE>GST</METHODTYPE>"
       rtnSTR = rtnSTR + "  <GSTCLASS/>"
-      rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>"
+      rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>"
       rtnSTR = rtnSTR + "  <LEDGERFROMITEM>No</LEDGERFROMITEM>"
     //      '                rtnSTR = rtnSTR + "  <REMOVEZEROENTRIES>No</REMOVEZEROENTRIES>"
       rtnSTR = rtnSTR + "  <ISPARTYLEDGER>No</ISPARTYLEDGER>"
-      rtnSTR = rtnSTR + "  <ISLASTDEEMEDPOSITIVE>Yes</ISLASTDEEMEDPOSITIVE>"
+      rtnSTR = rtnSTR + "  <ISLASTDEEMEDPOSITIVE>No</ISLASTDEEMEDPOSITIVE>"
     //      '                rtnSTR = rtnSTR + "       <ROUNDLIMIT> 1</ROUNDLIMIT>"                    
-      rtnSTR = rtnSTR + "  <AMOUNT>-" + Math.abs(LedgerEntry.LineAmount) + "</AMOUNT>"
+      rtnSTR = rtnSTR + "  <AMOUNT>" + Math.abs(LedgerEntry.LineAmount) + "</AMOUNT>"
       rtnSTR = rtnSTR + "</LEDGERENTRIES.LIST>"      
     });
 
@@ -1223,8 +1224,8 @@ export class TallyVouchersXML {
       PurchaseReturnData.InventoryEntriesData.forEach(InventoryEntry => {
         rtnSTR = rtnSTR + "<ALLINVENTORYENTRIES.LIST>"
         rtnSTR = rtnSTR + "  <STOCKITEMNAME>" + this.STR2XML(InventoryEntry.StockName) + "</STOCKITEMNAME>"
-        rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>"
-        rtnSTR = rtnSTR + "  <ISLASTDEEMEDPOSITIVE>Yes</ISLASTDEEMEDPOSITIVE>"
+        rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>"
+        rtnSTR = rtnSTR + "  <ISLASTDEEMEDPOSITIVE>No</ISLASTDEEMEDPOSITIVE>"
     //            '                rtnSTR = rtnSTR + "       <ISAUTONEGATE>No</ISAUTONEGATE>"
     //            '                rtnSTR = rtnSTR + "       <ISCUSTOMSCLEARANCE>No</ISCUSTOMSCLEARANCE>"
     //            '                rtnSTR = rtnSTR + "       <ISTRACKCOMPONENT>No</ISTRACKCOMPONENT>"
@@ -1242,7 +1243,7 @@ export class TallyVouchersXML {
         rtnSTR = rtnSTR + "    <ORDERNO/>"
         rtnSTR = rtnSTR + "    <TRACKINGNUMBER/>"
     //            '                rtnSTR = rtnSTR + "        <DYNAMICCSTISCLEARED>No</DYNAMICCSTISCLEARED>"
-        rtnSTR = rtnSTR + "    <AMOUNT>-" + InventoryEntry.LineAmount + "</AMOUNT>"
+        rtnSTR = rtnSTR + "    <AMOUNT>" + InventoryEntry.LineAmount + "</AMOUNT>"
         rtnSTR = rtnSTR + "    <ACTUALQTY>" + InventoryEntry.Qty +  " " + this.STR2XML(InventoryEntry.UOM) + "</ACTUALQTY>"
         rtnSTR = rtnSTR + "    <BILLEDQTY>" + InventoryEntry.Qty +  " " + this.STR2XML(InventoryEntry.UOM) + "</BILLEDQTY>"
         rtnSTR = rtnSTR + "  </BATCHALLOCATIONS.LIST>"
@@ -1253,11 +1254,11 @@ export class TallyVouchersXML {
     //      '                rtnSTR = rtnSTR + "        <GSTOVRDNCLASSIFICATION>Item Rate Having Less Than 1000</GSTOVRDNCLASSIFICATION>"
     //      '                rtnSTR = rtnSTR + "        <GSTOVRDNINELIGIBLEITC> Not Applicable</GSTOVRDNINELIGIBLEITC>"
     //      '                rtnSTR = rtnSTR + "        <GSTOVRDNISREVCHARGEAPPL> Not Applicable</GSTOVRDNISREVCHARGEAPPL>"
-        rtnSTR = rtnSTR + "    <ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>"
+        rtnSTR = rtnSTR + "    <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>"
     //            '                rtnSTR = rtnSTR + "        <LEDGERFROMITEM>No</LEDGERFROMITEM>"
         rtnSTR = rtnSTR + "    <REMOVEZEROENTRIES>No</REMOVEZEROENTRIES>"
         rtnSTR = rtnSTR + "    <ISPARTYLEDGER>No</ISPARTYLEDGER>"
-        rtnSTR = rtnSTR + "    <ISLASTDEEMEDPOSITIVE>Yes</ISLASTDEEMEDPOSITIVE>"
+        rtnSTR = rtnSTR + "    <ISLASTDEEMEDPOSITIVE>No</ISLASTDEEMEDPOSITIVE>"
         rtnSTR = rtnSTR + "    <AMOUNT>" + InventoryEntry.LineAmount + "</AMOUNT>"
         rtnSTR = rtnSTR + "    <RATEDETAILS.LIST>"
         rtnSTR = rtnSTR + "      <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>"
