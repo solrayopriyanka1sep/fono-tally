@@ -209,6 +209,7 @@ export interface ItemInfo {
     isPerishable?:boolean;
     isInclusiveOfTax?:boolean;
     TaxType?: TAXABILITY;
+    Taxability?:string;
     GSTTypeofSupply?:string;
     GstApplicableFrom?: Date;
     HSC_SAC?:string;
@@ -299,6 +300,8 @@ export class VoucherData {
     GSTRegistrationType?:string =""
     PartyGSTNo?:string = ""
     VoucherTypeClass?:string =""
+    DestinationState?:string = ""
+    DestinationCountry?:string = ""
 
     LedgerEntriesData: LedgerEntry[] = []
     //LedgerEntriesData: ILedgerEntry[] = []

@@ -97,7 +97,7 @@
                 <tbody>
                     <tr *ngFor="let maprow of TallyData.TransactionsStageData; let i = index">
                         <td class="filterable-cell" style="width: 15%;" >{{maprow.VoucherType}}</td>
-                        <td class="filterable-cell" style="width: 10%;">{{maprow.VoucherNumber}}</td>
+                        <td class="filterable-cell" style="width: 10%;">{{!maprow.VoucherRef ? maprow.VoucherNumber : maprow.VoucherRef   }}</td>
                         <td class="filterable-cell" style="width: 10%;">{{maprow.VoucherDate}}</td>
                         <td class="filterable-cell" style="width: 10%; text-align: right;">{{maprow.VoucherAmt}}</td>
                         <td class="filterable-cell" style="width: 10%;">

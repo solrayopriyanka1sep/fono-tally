@@ -9,6 +9,7 @@ export class MastersStageData {
     Id:number = 0     //Can be used as alias
     MasterName:string = ""
     ParentId:Number = 0
+    isPersonCompany:boolean = false
     ParentName:string = ""
     Alias:string = ""
     Address1?:string = ""
@@ -31,7 +32,8 @@ export class MastersStageData {
 
     GSTRegistrationType?:string = ""
     TaxType?:string = ""
-    GSTType?:string = ""
+    Taxability?:string="Taxable"
+    GSTType?:string = ""    
     GSTDutyHead?:string = ""
     GSTTypeOfSupply?:string = ""
     RoundingMethod?:string = ""

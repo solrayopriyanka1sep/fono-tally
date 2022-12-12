@@ -80,7 +80,11 @@ export class FronoIntService {
 
 
   getGroups(): Observable<any> {
-    return this.http.get<any>(this.fronoURL1 + '/AccountGroups/GetAllAccountGroups/' + this.FronoCompany )
+    //return this.http.get<any>(this.fronoURL1 + '/AccountGroups/GetAllAccountGroups/' + this.FronoCompany )
+
+    //http://103.212.143.188:5000/api/AccountGroups/GetAllAccountGroupsList/43
+    return this.http.get<any>(this.fronoURL1 + '/AccountGroups/GetAllAccountGroupsList/' + this.FronoCompany )
+
   }
 
   AddUpdateGroup(reqData:any): Observable<any> {
@@ -116,6 +120,7 @@ export class FronoIntService {
 
   getAccounts(): Observable<any> {
     //http://103.212.143.188:5000/api/GLAccount/GetAllGLAccountByCompanyId/43/25/0
+    
     return this.http.get<any>(this.fronoURL1 + '/GLAccount/GetAllGLAccountByCompanyId/' + this.FronoCompany + '/25/0' )
   }
 

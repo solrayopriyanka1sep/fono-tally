@@ -604,6 +604,17 @@ export class TallyVouchersXML {
     rtnSTR = rtnSTR + "<PERSISTEDVIEW>" + SaleData.VoucherInvoiceView + "</PERSISTEDVIEW>"
     rtnSTR = rtnSTR + "<VCHENTRYMODE>"  + SaleData.VoucherEntryMode + "</VCHENTRYMODE>"
 
+
+    rtnSTR = rtnSTR + "<STATENAME>Maharashtra</STATENAME>"
+    rtnSTR = rtnSTR + "<COUNTRYOFRESIDENCE>India</COUNTRYOFRESIDENCE>"
+    rtnSTR = rtnSTR + "<PLACEOFSUPPLY>" + SaleData.DestinationState + "</PLACEOFSUPPLY>"
+
+
+    rtnSTR = rtnSTR + "<PARTYGSTIN>" + SaleData.PartyGSTNo + "</PARTYGSTIN>"
+    if(!(!SaleData.DestinationState)) rtnSTR = rtnSTR + "<CONSIGNEESTATENAME>" + SaleData.DestinationState + "</CONSIGNEESTATENAME>"
+    if(!(!SaleData.DestinationCountry)) rtnSTR = rtnSTR + "<CONSIGNEECOUNTRYNAME>" + SaleData.DestinationCountry + "</CONSIGNEECOUNTRYNAME>"
+
+    // <CONSIGNEESTATENAME>Maharashtra</CONSIGNEESTATENAME>
 //'            rtnSTR = rtnSTR + "<AUDITED>No</AUDITED>"
 //'            rtnSTR = rtnSTR + "<FORJOBCOSTING>No</FORJOBCOSTING>"
     rtnSTR = rtnSTR + "<ISOPTIONAL>No</ISOPTIONAL>"
@@ -655,7 +666,8 @@ export class TallyVouchersXML {
       rtnSTR = rtnSTR + "<LEDGERENTRIES.LIST>"
 //      '                rtnSTR = rtnSTR + "  <ROUNDTYPE>Normal Rounding</ROUNDTYPE>"
       rtnSTR = rtnSTR + "  <LEDGERNAME>" + this.STR2XML(LedgerEntry.LedgerName) + "</LEDGERNAME>"
-      rtnSTR = rtnSTR + "  <METHODTYPE>GST</METHODTYPE>"
+//      rtnSTR = rtnSTR + "<ROUNDTYPE>Normal Rounding</ROUNDTYPE>"
+//      rtnSTR = rtnSTR + "  <METHODTYPE>GST</METHODTYPE>"
       rtnSTR = rtnSTR + "  <GSTCLASS/>"
       rtnSTR = rtnSTR + "  <ISDEEMEDPOSITIVE>No</ISDEEMEDPOSITIVE>"
       rtnSTR = rtnSTR + "  <LEDGERFROMITEM>No</LEDGERFROMITEM>"
@@ -712,6 +724,7 @@ export class TallyVouchersXML {
         rtnSTR = rtnSTR + "    <ISPARTYLEDGER>No</ISPARTYLEDGER>"
         rtnSTR = rtnSTR + "    <ISLASTDEEMEDPOSITIVE>No</ISLASTDEEMEDPOSITIVE>"
         rtnSTR = rtnSTR + "    <AMOUNT>" + InventoryEntry.LineAmount + "</AMOUNT>"
+/*
         rtnSTR = rtnSTR + "    <RATEDETAILS.LIST>"
         rtnSTR = rtnSTR + "      <GSTRATEDUTYHEAD>Integrated Tax</GSTRATEDUTYHEAD>"
         rtnSTR = rtnSTR + "    </RATEDETAILS.LIST>"
@@ -724,6 +737,7 @@ export class TallyVouchersXML {
         rtnSTR = rtnSTR + "    <RATEDETAILS.LIST>"
         rtnSTR = rtnSTR + "       <GSTRATEDUTYHEAD>Cess</GSTRATEDUTYHEAD>"
         rtnSTR = rtnSTR + "    </RATEDETAILS.LIST>"
+*/        
         rtnSTR = rtnSTR + " </ACCOUNTINGALLOCATIONS.LIST>"
         rtnSTR = rtnSTR + "</ALLINVENTORYENTRIES.LIST>"
       });

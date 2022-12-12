@@ -246,7 +246,7 @@ export class  TallyMastersXML {
       ModifiedName = this.XmlName(ModifiedName)
       GrpName = this.XmlName(GrpName)
       
-      GroupUnder = this.XmlName(GroupUnder)
+      //GroupUnder = this.XmlName(GroupUnder)
       GroupUnder = (TallyGroup != TALLYGROUP.Non_Tally_Group) ? GroupUnder = TallyGroup  : this.XmlName(GroupUnder) 
       const guid = GrpId != "" ? "<GUID>AVS-Frono-Group-" + GrpId + "</GUID>" : ""
       const alias = GrpAlias != "" ? `<NAME>${GrpAlias}</NAME>` : ""
@@ -536,6 +536,7 @@ export class  TallyMastersXML {
     CreateModifyLedgerXML(LedInfo:LedgerInfo , isModify:boolean = false, ModifiedName:string ="" ):string {
         LedInfo.LedName = this.XmlName(LedInfo.LedName)
         LedInfo.LedGroup = this.XmlName(LedInfo.LedGroup)
+
         if(ModifiedName) ModifiedName = this.XmlName(ModifiedName)
         if(LedInfo.AliasName) LedInfo.AliasName = this.XmlName(LedInfo.AliasName)
         if(LedInfo.Add1) LedInfo.Add1 = this.XmlName(LedInfo.Add1)
@@ -1588,7 +1589,7 @@ export class  TallyMastersXML {
         StockItemInfo.SGST_Rate = !StockItemInfo.SGST_Rate ? 0 : StockItemInfo.SGST_Rate
         StockItemInfo.IGST_Rate = !StockItemInfo.IGST_Rate ? 0 : StockItemInfo.IGST_Rate
 
-
+        
         let XMLstr = this.XMLHeadImportMasters
         XMLstr = XMLstr + `<TALLYMESSAGE xmlns:UDF="TallyUDF">`
         XMLstr = XMLstr + ` <STOCKITEM NAME="` + StockItemInfo.ItemName + `" RESERVEDNAME="">`            
@@ -1632,10 +1633,13 @@ export class  TallyMastersXML {
         XMLstr = XMLstr + "<OPENINGVALUE>-" + StockItemInfo.OpeningValue + "</OPENINGVALUE>"
         XMLstr = XMLstr + "<OPENINGRATE>" + StockItemInfo.OpeningRate + "/" + StockItemInfo.BaseUOM + "</OPENINGRATE>"
         XMLstr = XMLstr + "<GSTDETAILS.LIST>"
-        XMLstr = XMLstr + "<APPLICABLEFROM>" + gstdate + "</APPLICABLEFROM>" 
+//        XMLstr = XMLstr + "<APPLICABLEFROM>" + gstdate + "</APPLICABLEFROM>" 
+       
+        XMLstr = XMLstr + "<APPLICABLEFROM>20211201</APPLICABLEFROM>"
         XMLstr = XMLstr + "<CALCULATIONTYPE>On Value</CALCULATIONTYPE>"
-        XMLstr = XMLstr + "<HSNMASTERNAME/>"
-        XMLstr = XMLstr + "<TAXABILITY>" + StockItemInfo.TaxType + "</TAXABILITY>"
+        XMLstr = XMLstr + "<HSNCODE>" + StockItemInfo.HSC_SAC + "</HSNCODE>"
+ 
+        XMLstr = XMLstr + "<TAXABILITY>" + StockItemInfo.Taxability + "</TAXABILITY>"
         XMLstr = XMLstr + "<ISREVERSECHARGEAPPLICABLE>" + ReverseCharge + "</ISREVERSECHARGEAPPLICABLE>"
         XMLstr = XMLstr + "<ISNONGSTGOODS>No</ISNONGSTGOODS>"
         XMLstr = XMLstr + "<GSTINELIGIBLEITC>No</GSTINELIGIBLEITC>"
@@ -1686,6 +1690,7 @@ export class  TallyMastersXML {
         XMLstr = XMLstr + "    </TALLYMESSAGE>"
         XMLstr = XMLstr + this.XMLBottomImport
     
+
        return XMLstr
     }
 

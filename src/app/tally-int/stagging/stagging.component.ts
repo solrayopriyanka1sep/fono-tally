@@ -43,7 +43,7 @@ export class StaggingComponent implements OnInit {
     this.MasterTypes = this.TallyData.MasterTypes
     this.ActionList = ['Create', 'Modify', 'Delete' ]
     this.VoucherTypeList = ['All', 'Sales', 'Purchase', 'Debit Note', 'Credit Note', 'Receipt', 'Payment', 'Journal']
-    this.MastersTypeList = ['All', 'Ledger Groups', 'Units', 'Stock Groups', 'Stock Categories', 'Stock Items', 'Locations', 'Cost Centers', 'Cost Categories' ]
+    this.MastersTypeList = ['All', 'Ledger Groups', 'Ledgers', 'Units', 'Stock Groups', 'Stock Categories', 'Stock Items', 'Locations', 'Cost Centers', 'Cost Categories' ]
   }
 
  
@@ -145,11 +145,13 @@ export class StaggingComponent implements OnInit {
         next: (res:any) => {
             if(res.messageText == "") {
               res.data.forEach( (item:any) => {
-                if(item.isSuperAdmin == false && item.underAccountGroupsId != 0) {
+                //if(item.isDisabled == false && item.underAccountGroupsId > 1) {
+                if(item.underAccountGroupsId > 1) {  
                   let mData = new MastersStageData()
                   mData.Action = "Create"
                   mData.MasterType = "Ledger Groups"
                   mData.MasterName = item.groupName
+
                   const parentData = res.data.filter( (el:any) =>  el.accountGroupsId  == item.underAccountGroupsId)
                   mData.ParentId = item.underAccountGroupsId
                   mData.ParentName = parentData[0].groupName
@@ -211,8 +213,19 @@ export class StaggingComponent implements OnInit {
                   mData.IncomeTaxNumber = !item.panNumber ? "" : item.panNumber
                   mData.Email = !item.email ? "" : item.email
                   mData.Contact = !item.mobile ? "" : item.mobile
-                  mData.PartyGSTIN = !item.gstNumber ? "" : item.gstNumber 
-                  
+                  mData.Address1 = item.city
+//                  mData.Address2
+//                  mData.Address3
+//                  mData.Address4
+                  mData.GSTApplicable = item.gstNumber != "" 
+                  mData.StateName = "Maharashtra"
+                  mData.CountryName = 'India'
+                  mData.GSTRegistrationType = "Regular"
+                  mData.PartyGSTIN = item.gstNumber        
+                  mData.IsBillwiseOn = true
+                  mData.IsCostCentresOn = false
+                  mData.isPersonCompany = true           
+
                   this.TallyData.MastersStageData.push(mData) 
               });
             } else {
@@ -278,6 +291,7 @@ export class StaggingComponent implements OnInit {
                   mData.Id = item.itemId 
                   mData.GstItemType = item.itemType
                   mData.TaxType = item.taxability
+                  mData.Taxability = item.taxability
                   mData.HSNCode = item.hsnCode
                   mData.IGST = item.igst
                   mData.CGST = item.cgst
@@ -327,7 +341,7 @@ export class StaggingComponent implements OnInit {
                   mData.VoucherAmt = item.invoiceTotal
                   mData.VoucherRef = item.invoiceNumber
                   mData.VoucherRefDate = item.invoiceDate.substring(0, 10)
-                  mData.HeaderLedger = item.customerName            
+                  mData.HeaderLedger = item.customerName
                   this.TallyData.TransactionsStageData.push(mData) 
               });
             } else {
@@ -573,7 +587,7 @@ export class StaggingComponent implements OnInit {
 
   ExportMasterstoTally(){
     for (const dataRow of this.TallyData.MastersStageData) {
-      if (dataRow.MasterType == "Ledger Groups"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Ledger Groups"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) { 
         this.TallyAPI.CreateModifyGroup(dataRow.MasterName, TALLYGROUP.Non_Tally_Group,"" ,dataRow.ParentName, dataRow.Id, "" ).subscribe({
           next: (res:any) => {            
               if(res.Error == false) {
@@ -592,7 +606,7 @@ export class StaggingComponent implements OnInit {
         })
       }
 
-      if (dataRow.MasterType == "Ledger Groups"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Ledger Groups"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteGroup(dataRow.MasterName ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -613,12 +627,24 @@ export class StaggingComponent implements OnInit {
 
       if (dataRow.isSelected && dataRow.MasterType == "Ledgers"  && (dataRow.Action == "Create" || dataRow.Action == "Modify" )  ) {         
         let ledgerData:LedgerInfo = {
-          LedName : "",
-          LedGroup : ""
+          Id : dataRow.Id, 
+          LedName : dataRow.MasterName,
+          LedGroup : dataRow.ParentName,
         }
-        ledgerData.Id =  dataRow.Id
-        ledgerData.LedName = dataRow.MasterName
-        ledgerData.LedGroup = dataRow.ParentName
+
+        if(dataRow.isPersonCompany) {
+          ledgerData.Add1 = dataRow.Address1
+          ledgerData.State = dataRow.StateName
+          ledgerData.Country = dataRow.CountryName
+          ledgerData.Email = dataRow.Email
+          ledgerData.PANNo = dataRow.IncomeTaxNumber
+          ledgerData.GSTINNo = dataRow.PartyGSTIN
+          ledgerData.GSTApplicable = dataRow.GSTApplicable
+          ledgerData.GSTRegistrationType  = dataRow.GSTRegistrationType
+          ledgerData.IsBillwise = dataRow.IsBillwiseOn
+          ledgerData.CostCenterOn = dataRow.IsCostCentresOn
+        }
+
 
 //        console.log("Stagging component", ledgerData)
       
@@ -640,7 +666,7 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      if (dataRow.MasterType == "Ledgers"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Ledgers"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteLedger(dataRow.MasterName ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -678,7 +704,7 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      if (dataRow.MasterType == "Godowns"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Godowns"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteLocation( dataRow.MasterName ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -716,7 +742,7 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      if (dataRow.MasterType == "Units"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Units"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteUOM( dataRow.MasterName ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -757,7 +783,7 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      if (dataRow.MasterType == "Stock Groups"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Stock Groups"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteStockGroup( dataRow.MasterName  ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -795,7 +821,7 @@ export class StaggingComponent implements OnInit {
         })      
       }
       
-      if (dataRow.MasterType == "Stock Categories"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Stock Categories"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteStockCategory( dataRow.MasterName  ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -822,12 +848,14 @@ export class StaggingComponent implements OnInit {
           BaseUOM : dataRow.UOM,
           Parent : dataRow.ParentName,
           GSTApplicable: (dataRow.TaxType == "" ? false : true ),
+          Taxability: dataRow.Taxability,
           Category: dataRow.category,
-          HSC_SAC : dataRow.hsnCode,
+          HSC_SAC : dataRow.HSNCode,
           SGST_Rate : dataRow.SGST,
           CGST_Rate : dataRow.CGST,
           IGST_Rate : dataRow.IGST
         }
+
         
         this.TallyAPI.CreateModifyStockItem( itemData, false, ""  ).subscribe({
           next: (res:any) => {
@@ -847,7 +875,7 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
-      if (dataRow.MasterType == "Stock Items"  && dataRow.Action == "Delete"  ) { 
+      if (dataRow.isSelected && dataRow.MasterType == "Stock Items"  && dataRow.Action == "Delete"  ) { 
         this.TallyAPI.DeleteStockItem( dataRow.MasterName  ).subscribe({
           next: (res:any) => {
               if(res.Error == false) {
@@ -896,17 +924,41 @@ export class StaggingComponent implements OnInit {
               VchData.Narration  = "Created from Frono API" 
               VchData.VoucherInvoiceView ="Invoice Voucher View"
               VchData.VoucherEntryMode="Item Invoice"
+              VchData.PartyGSTNo = res.data.customerDetails.billingCustomerGSTNumber
+              VchData.DestinationState = res.data.customerDetails.shippingStateName
+              VchData.DestinationCountry = res.data.customerDetails.shippingCountry
+
       
               let LedgerEntriesData: LedgerEntry[] = []
               let InventoryEntriesData: InventoryEntry[] = []
               for (const itemsRow of res.data.itemDetails) {
-                InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: "Sales Account" })
+                InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.taxableAmount, LedgerName: "Sales Account" })
               } 
               VchData.InventoryEntriesData = InventoryEntriesData
 
+
+              if(res.data.invoiceDetails.totalDiscount != 0) {
+                LedgerEntriesData.push({LedgerName : "Discount Given", CashLedger : "", DebitCredit : "CR" , LineAmount : res.data.invoiceDetails.totalDiscount })
+              }
+
+              if(res.data.invoiceDetails.tdsAmount != 0) {
+                LedgerEntriesData.push({LedgerName : "T D S", CashLedger : "", DebitCredit : "CR" , LineAmount : res.data.invoiceDetails.tdsAmount })
+              }
+
+              for (const taxRow of res.data.taxDetails) {
+                if( taxRow.sgst != 0)   LedgerEntriesData.push({LedgerName : "SGST Output Account", CashLedger : "", DebitCredit : "DR" , LineAmount : taxRow.sgst })
+                if( taxRow.cgst != 0)   LedgerEntriesData.push({LedgerName : "CGST Output Account", CashLedger : "", DebitCredit : "DR" , LineAmount : taxRow.cgst })
+                if( taxRow.igst != 0)   LedgerEntriesData.push({LedgerName : "IGST Output Account", CashLedger : "", DebitCredit : "DR" , LineAmount : taxRow.igst })                
+              } 
+
+              if(res.data.invoiceDetails.roundOff != 0) {
+                LedgerEntriesData.push({LedgerName : "RoundOff", CashLedger : "", DebitCredit : "CR" , LineAmount : res.data.invoiceDetails.roundOff })
+              }
+              
+              VchData.LedgerEntriesData = LedgerEntriesData
+                            
               this.TallyAPI.SaleVoucher(VchData  ).subscribe({
                 next: (response:any) => {
-                    console.log(response)
                     if(response.Error == false) {
                       VchDataRow.Status = "Success" 
                       VchDataRow.Message = response.data
@@ -1163,7 +1215,12 @@ export class StaggingComponent implements OnInit {
   
 
   toggleSelect(){
-    this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected)
+    if(this.selectedMasterType == "All") {
+      this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected )
+    } else {
+      this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected && item.MasterType == this.selectedMasterType)
+    }
+    
 
   }
 

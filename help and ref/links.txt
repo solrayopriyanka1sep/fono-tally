@@ -1,4 +1,24 @@
 
+
+Change in Config : 
+1) Define Round Off Ledger for Sales
+2) Define Discount Ledger  for Sales
+3) Define TDS Ledger  for Sales
+
+1) Define Round Off Ledger for Purchase
+2) Define Discount Ledger  for Purchase
+3) Define TDS Ledger  for Purchase
+
+1) Define Round Off Ledger for Debit Note
+2) Define Discount Ledger  for Debit Note
+3) Define TDS Ledger  for Debit Note
+
+1) Define Round Off Ledger for Credit Note
+2) Define Discount Ledger  for Credit Note
+3) Define TDS Ledger  for Credit Note
+
+
+
 http://tdlexpert.com/index.php?threads/time-out-error-for-master-exporting-for-large-data.9544/
 
 
