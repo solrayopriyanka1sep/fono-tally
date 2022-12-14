@@ -45,6 +45,8 @@ export class TallyDataService {
 
     MastersStageData:any[] = []
     TransactionsStageData:any[] = []
+
+    mappingData:any[] = []
     FronoCompanyNumber:number = 0
 
     
@@ -78,6 +80,18 @@ export class TallyDataService {
 
             }                
         })
+
+        this.FronoAPI.getMappingData().subscribe({
+            next: (res:any) => {
+                this.mappingData = res.data 
+            },
+            error: error => {
+                this.mappingData = []
+
+            }                
+        })
+
+
 
         if(this.ConfigOptions.ledgerMasters) {
             this.TallyAPI.GetTallyGroups.subscribe({

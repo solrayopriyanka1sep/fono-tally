@@ -16,6 +16,18 @@ namespace Fronotallyapi.Models
 
   }
 
+  public interface ImappingDataRepository
+  {
+    public Task<IEnumerable<mappingData>> GetTallyMapping();
+    public Task<BaseDtos> GetCompanyMapping(int FronoCompanyId);
+    //public Task<IEnumerable<mappingData>> GetCompanyMapping(int FronoCompanyId);
+
+    public Task<BaseDtos> AddUpdteMappingForCompany(int id, mappingData[] companyMapping);
+    public Task<BaseDtos> DeleteMappingForCompany(int id);
+
+  }
+
+
   public interface IunitsMasterRepository
   {
     public Task<BaseDtos> GetunitsMaster();

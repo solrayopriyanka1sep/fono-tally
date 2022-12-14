@@ -83,5 +83,22 @@ payload
 }
 
 
+mppaing table
+
+FronoCompanyID   Voucher Type  Transaction Type  GSTType          GSTRate        Tally Account Name  
+43                  Sales             Discount                                       Discount Given   
+43                  Sales             Round Off                                      RoundOff
+43                  Sales             GST           Integrated Tax     18            IGST 18%
+43                  Sales             GST           State Tax           9            SGST 9%
+43                  Sales             GST           Central Tax         9            CGST 9%
+43                 Sales             GST           Cess                0            GST Cess 
+
+Purchase
+Debit Note
+Credit Note
+
+
+
+
 
 

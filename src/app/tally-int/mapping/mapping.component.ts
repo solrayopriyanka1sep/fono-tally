@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TallyDataService } from '../webtally/tallydata.service';
 import { TallyIntService } from '../webtally/tallyint.service';
+import { FronoIntService } from '../webtally/fronoint.service';
 //import {NgForm} from '@angular/forms';
 
 @Component({
@@ -11,6 +12,11 @@ import { TallyIntService } from '../webtally/tallyint.service';
 })
 
 export class MappingComponent implements OnInit {
+
+  VoucherTypesList:string[] = []
+  TransactionTypesList:string[]=[]
+  GSTTypesList:string[]=[]
+
 
   /*
   TallyGroupsData: any[] = []
@@ -26,19 +32,32 @@ export class MappingComponent implements OnInit {
   TallyData:TallyDataService
   
   MasterTypes:string[] = []
+  ResponseMessage:string = ""
 
-  mappingList:{MasterType:string, FronoName:string, TallyName:string, isActive:boolean }[] = []
+  dutiesandTaxesLedgers:any[] = []
+  otherLedgers:any[] = []
 
-  constructor(private TallyAPI:TallyIntService, private TallyDataSrv:TallyDataService,  private route:Router)  { 
+  //mappingList:{MasterType:string, FronoName:string, TallyName:string, isActive:boolean }[] = []
+
+  constructor(private TallyAPI:TallyIntService, private TallyDataSrv:TallyDataService,  private FronoAPI:FronoIntService, private route:Router)  { 
     this.TallyData = this.TallyDataSrv
     
   }
 
   ngOnInit(): void {
-    if(this.mappingList.length == 0) this.mappingList.push({ MasterType: "Ledgers", FronoName: "Cash in Hand", TallyName: "Cash" , isActive:false})
+    //if(this.mappingList.length == 0) this.mappingList.push({ MasterType: "Ledgers", FronoName: "Cash in Hand", TallyName: "Cash" , isActive:false})
 
     //this.dataImport()
-    this.MasterTypes = this.TallyData.MasterTypes
+    //this.MasterTypes = this.TallyData.MasterTypes
+    this.VoucherTypesList = ['Sales', 'Purchase', 'Debit Note', 'Credit Note']
+    this.TransactionTypesList = ['Discount', 'Round Off', 'GST', 'TDS' ]
+    this.GSTTypesList = ['Integrated Tax', 'State Tax', 'Central Tax', 'Cess']
+    this.ResponseMessage = ""
+
+    this.dutiesandTaxesLedgers = this.TallyData.TallyLedgerData.filter(el => el._PRIMARYGROUP == "Duties & Taxes")
+    this.otherLedgers = this.TallyData.TallyLedgerData.filter(el => el._PRIMARYGROUP != "Duties & Taxes" &&  el._PRIMARYGROUP != "Sundry Debtors" &&  el._PRIMARYGROUP != "Sundry Creditors" )
+
+
     //this.MasterTypes=['Ledger Groups', 'Ledgers', 'Stock Groups', 'Stock Items', 'Stock Categories', 'Locations', 'Cost Centers', 'Cost Categories' ]
 
   }
@@ -104,15 +123,42 @@ export class MappingComponent implements OnInit {
 
   addrow(Position:number){
     //this.mappingList.push({ MasterType: "Ledgers", FronoName: "vvv", TallyName: "Cash" , isActive:true})
-    this.mappingList.splice(Position+1,0, { MasterType: "Ledgers", FronoName: "vvv", TallyName: "Cash" , isActive:true})
+    this.TallyData.mappingData.splice(Position+1,0, { fronoCompanyId: this.TallyData.FronoCompanyNumber,
+                                                      voucherType: "",
+                                                      transactionType: "",
+                                                      gstType: "",
+                                                      gstRate: 0,
+                                                      tallyLedgerName: "" })
   }
 
   deleterow(Position:number){
-    this.mappingList.splice(Position, 1);
+    this.TallyData.mappingData.splice(Position, 1);
   }  
 
   saveMapping(){
-    this.route.navigate(['tally-integration/home']);
+    const requestData = this.TallyData.mappingData
+
+    this.FronoAPI.addUpdateMappingData(requestData).subscribe({
+      next: (res:any) => {
+          //console.log(res)
+          this.ResponseMessage = res.data.messageText
+
+          //if(res.MessageId != 200) {
+          //  this.ResponseMessage = res.data.MessageText
+          //} else {
+          //  this.route.navigate(['tally-integration/home']);
+          //  return;
+          //}              
+        },
+        error: error => {
+            //this.errorMessage = error.message;
+            console.error( error);
+            this.ResponseMessage = error.messageText
+        }                
+    })
+
+
+//    this.route.navigate(['tally-integration/home']);
   }
 
   cancel(){

@@ -67,6 +67,14 @@ export class FronoIntService {
     return rtnDt
   }
 
+  getMappingData(): Observable<any> {
+    return this.http.get<any>(this.fronoURL + '/mappingData/' + this.FronoCompany )
+  }
+
+  addUpdateMappingData(mappingData:any): Observable<any> {
+    return this.http.post<any>(this.fronoURL + '/mappingData/' + this.FronoCompany , mappingData)
+  }
+
 
   getConfig(): Observable<any> {
     return this.http.get<any>(this.fronoURL + '/configData/' + this.FronoCompany )

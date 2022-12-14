@@ -23,10 +23,8 @@
                     {{MastName}}
                 </option>
             </select>                    
-
             <!-- <button (click)="getFronoVoucherstoExport()" style="margin-left: 10px ;">Filter</button> -->
         </div>
-
         
             <table class="table table-striped">
                 <thead>
@@ -89,7 +87,7 @@
                     <th style="text-align: center; width: 10%;">Voucher Date</th>
                     <th style="text-align: center; width: 10%;">Amount</th>
                     <th style="text-align: center; width: 10%;">Action</th>
-                    <th style="text-align: center; width:  5%;" >Select</th>
+                    <th style="text-align: center; width:  5%;" (click)="toggleSelectVchr()">Select</th>
                     <th style="text-align: center; width: 15%;">Status</th>
                     <th style="text-align: center; width: 20%;">Message</th>
                 </tr>

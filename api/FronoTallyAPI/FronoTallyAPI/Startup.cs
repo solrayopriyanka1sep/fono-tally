@@ -50,7 +50,9 @@ namespace FronoTallyAPI
       services.AddScoped<IConfigDataRepository, ConfigDataRepository>();
       services.AddScoped<IunitsMasterRepository, unitsMasterRepository>();
       services.AddScoped<ImasterDataRepository, masterDataRepository>();
+      services.AddScoped<ImappingDataRepository, mapppnigDataRepository>();
       services.AddControllers();
+
 
     }
 

@@ -29,6 +29,26 @@ INSERT INTO TallyConfig ( FronoCompanyId , TallycompanyName , LedgerMasters , St
 ReceiptsAndPayments , Journals , SalesOrders , PurchaseOrders ) VALUES ( 43, 'Test Company 1', 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 ) ;
 
 
+CREATE TABLE TallyMapping (FronoCompanyId int NOT NULL, VoucherType VARCHAR(50) NOT NULL , TransactionType VARCHAR(15) NOT NULL, GSTType VARCHAR(25) , GSTRate DECIMAL(7,2) DEFAULT 0, TallyLedgerName VARCHAR(50) );
+
+
+
+delete FROM TallyMapping
+
+INSERT INTO TallyMapping (FronoCompanyId, VoucherType, TransactionType, GSTType, GSTRate, TallyLedgerName)
+     VALUES (43, 'Sales', 'Discount', '', 0, 'Discount Given' ) ,
+	 (43, 'Sales', 'Round Off', '', 0, 'RoundOff' ) ,
+	 (43, 'Sales', 'GST', 'Integrated Tax', 18, 'IGST 18%' ) ,
+	 (43, 'Sales', 'GST', 'State Tax', 9, 'SGST 9%' ) ,
+	 (43, 'Sales', 'GST', 'Central Tax', 9, 'CGST 9%' )	 ;
+
+
+
+
+SELECT * FROM TallyMapping
+
+
+
 
 
 

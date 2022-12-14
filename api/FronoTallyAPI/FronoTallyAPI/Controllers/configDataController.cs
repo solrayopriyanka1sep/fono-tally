@@ -42,7 +42,7 @@ namespace fronotallyapi.Controllers
       }
     }
 
-    [HttpGet("{id}", Name = "CompanyById")]
+    [HttpGet("{id}")]
     public async Task<BaseDtos> GetCompanyConfig(int id)
     {
       try

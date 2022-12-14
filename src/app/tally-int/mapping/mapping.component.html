@@ -7,156 +7,75 @@
 <!--        <form>-->
             <table >
                 <tr>
-                    <th style="text-align: center;">Master Type</th>
-                    <th style="text-align: center;">Name in Frono</th>
-                    <th style="text-align: center;">Name in Tally</th>
-                    <th style="text-align: center;">Active/Inactive</th>
+                    <th style="text-align: center;">Voucher Type</th>
+                    <th style="text-align: center;">Transaction Type</th>
+                    <th style="text-align: center;">GST Type</th>
+                    <th style="text-align: center;">GST Rate</th>
+                    <th style="text-align: center;">Tally Ledger Name</th>
                     <th style="text-align: center;">Action</th>
                 </tr>
-                <tr *ngFor="let maprow of mappingList; let i = index">
+                <tr *ngFor="let mappingRow of TallyData.mappingData; let i = index">
                     <td>
-                        <select [(ngModel)]="maprow.MasterType" >
-                            <option *ngFor="let MasterType of MasterTypes" name="MasterType" [value]="MasterType"   >
-                                {{MasterType}}
+                        <select [(ngModel)]="mappingRow.voucherType" >
+                            <option *ngFor="let VoucherType of VoucherTypesList" name="voucherType" [value]="VoucherType"   >
+                                {{VoucherType}}
                             </option>
                         </select>
                     </td>
-                    <td><input type="text" id="FronoName" name="FronoName" [(ngModel)]="maprow.FronoName"></td>
                     <td>
-                        <div *ngIf="maprow.MasterType =='Ledger Groups'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let group of TallyData.TallyGroupsData" name="TallyName" [value]="group.GROUPNAME" >
-                                {{group.GROUPNAME}}
-                                </option>
-                            </select>
-                        </div>
-                        <div *ngIf="maprow.MasterType =='Ledgers'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let Ledger of TallyData.TallyLedgerData" name="TallyName" [value]="Ledger.LEDERNAME" >
-                                {{Ledger.LEDERNAME}}
-                                </option>
-                            </select>
-                        </div>
-                        <div *ngIf="maprow.MasterType =='Stock Groups'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let StockGroup of TallyData.TallyStockGroupsData" name="TallyName" [value]="StockGroup.STOCKGROUPNAME" >
-                                {{StockGroup.STOCKGROUPNAME}}
-                                </option>
-                            </select>
-                        </div>
-                        <div *ngIf="maprow.MasterType =='Stock Items'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let StockItem of TallyData.TallyStockItemsData" name="TallyName" [value]="StockItem.STOCKNAME" >
-                                {{StockItem.STOCKNAME}}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div *ngIf="maprow.MasterType =='Stock Categories'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let StockCategory of TallyData.TallyStockCategories" name="TallyName" [value]="StockCategory.STOCKCATEGORYNAME" >
-                                {{StockCategory.STOCKCATEGORYNAME}}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div *ngIf="maprow.MasterType =='Locations'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let Location of TallyData.TallyLocations" name="TallyName" [value]="Location.LOCATIONNAME" >
-                                {{Location.LOCATIONNAME}}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div *ngIf="maprow.MasterType =='Cost Centers'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let CostCenter of TallyData.TallyCostCenters" name="TallyName" [value]="CostCenter.COSTCENTERNAME" >
-                                {{CostCenter.COSTCENTERNAME}}
-                                </option>
-                            </select>
-                        </div>
-
-                        <div *ngIf="maprow.MasterType =='Cost Categories'">
-                            <select [(ngModel)]="maprow.TallyName">
-                                <option *ngFor="let CostCategory of TallyData.TallyCostCategories" name="TallyName" [value]="CostCategory.COSTCATEGORYNAME" >
-                                {{CostCategory.COSTCATEGORYNAME}}
-                                </option>
-                            </select>
-                        </div>
-
+                        <select [(ngModel)]="mappingRow.transactionType" >
+                            <option *ngFor="let TransactionType of TransactionTypesList" name="transactionType" [value]="TransactionType"   >
+                                {{TransactionType}}
+                            </option>
+                        </select>
                     </td>
-                    <td><input type="checkbox" [checked]="maprow.isActive" (change)="maprow.isActive = !maprow.isActive"/></td>
+                    <td>
+                        <div *ngIf="mappingRow.transactionType == 'GST'" >
+                            <select [(ngModel)]="mappingRow.gstType" >
+                                <option *ngFor="let GSTType of GSTTypesList" name="gstType" [value]="GSTType"   >
+                                    {{GSTType}}
+                                </option>
+                            </select>
+                        </div>
+                    </td>                    
+                    <td>
+                        <div *ngIf="mappingRow.transactionType == 'GST'" >
+                            <input type="number" id="gstRate" name="gstRate" [(ngModel)]="mappingRow.gstRate">
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="mappingRow.transactionType == 'GST'" >
+                            <select [(ngModel)]="mappingRow.tallyLedgerName">
+                                <option *ngFor="let Ledger of dutiesandTaxesLedgers" name="TallyLedger" [value]="Ledger.LEDGERNAME" >
+                                    {{Ledger.LEDGERNAME}}
+                                </option>
+                            </select>
+                        </div>
+                        <div *ngIf="mappingRow.transactionType != 'GST'" >
+                            <select [(ngModel)]="mappingRow.tallyLedgerName">
+                                <option *ngFor="let Ledger of otherLedgers" name="TallyLedger" [value]="Ledger.LEDGERNAME" >
+                                    {{Ledger.LEDGERNAME}}
+                                </option>
+                            </select>
+                        </div>
+                    </td>
                     <td><button (click)="addrow(i)">+</button>&nbsp;&nbsp;
                         <button (click)="deleterow(i)">-</button>
                     </td>
-                </tr>
-
-<!--
-                <tr>
-                    <td>
-                        <select>
-                            <option *ngFor="let MasterType of MasterTypes" [value]="MasterType">
-                            {{MasterType}}
-                            </option>
-                        </select>
-                    </td>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><select>
-                        <option *ngFor="let group of TallyGroupsData" [value]="group.GROUPNAME">
-                          {{group.GROUPNAME}}
-                        </option>
-                      </select>
-                    </td>
-                    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><button >+</button>&nbsp;&nbsp;
-                        <button >-</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <select>
-                            <option *ngFor="let MasterType of MasterTypes" [value]="MasterType">
-                            {{MasterType}}
-                            </option>
-                        </select>
-                    </td>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><select>
-                        <option *ngFor="let Ledger of TallyLedgerData" [value]="Ledger.LEDERNAME">
-                          {{Ledger.LEDERNAME}}
-                        </option>
-                      </select></td>
-                    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><button >+</button>&nbsp;&nbsp;
-                        <button >-</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><button >+</button>&nbsp;&nbsp;
-                        <button >-</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><input type="text" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"></td>
-                    <td><button >+</button>&nbsp;&nbsp;
-                        <button >-</button>
-                    </td>
-                </tr>
--->                                
-          </table>              
+                </tr>        
+            </table>              
 <!--        </form> -->
     </div>
     <div style="padding-top: 20px; text-align: center;">
         <button (click)="saveMapping()">Save</button>&nbsp;&nbsp;
-        <button (click)="cancel()">Cancel</button>
+        <button (click)="cancel()">Close</button>
     </div>
+    <div style="padding-top: 20px; text-align: center;">
+        <p style="text-align: center;color: red;">         
+            {{ResponseMessage }}
+        </p>
+    </div>
+
 </div>
 
 
