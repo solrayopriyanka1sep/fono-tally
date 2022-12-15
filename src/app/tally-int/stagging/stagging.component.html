@@ -7,10 +7,10 @@
 
 <div class="warpper">
   <input class="radio" id="one" name="group" type="radio" checked>
-  <input class="radio" id="two" name="group" type="radio">
+  <input class="radio" id="two" name="group" type="radio" *ngIf="TallyData.ExportImport == 0">
   <div class="tabs">
   <label class="tab" id="one-tab" for="one">Masters Data</label>
-  <label class="tab" id="two-tab" for="two">Transactions Data</label>
+  <label class="tab" id="two-tab" for="two" *ngIf="TallyData.ExportImport == 0">Transactions Data</label>
 </div>
 <div class="panels">
     <div class="panel" id="one-panel">
@@ -24,19 +24,20 @@
                 </option>
             </select>                    
             <!-- <button (click)="getFronoVoucherstoExport()" style="margin-left: 10px ;">Filter</button> -->
-        </div>
-        
+        </div>        
+        <div *ngIf="TallyData.ExportImport == 0">
+            <div  class="table-title" style="margin-bottom: 10px; text-align: center;">List of Masters from Frono</div>
             <table class="table table-striped">
                 <thead>
                     <tr>
                         <th style="text-align: center; width: 15%; ">Master Type</th>
                         <th style="text-align: center; width: 19%;">Master Name</th>
                         <th style="text-align: center; width: 10%;">Action</th>
-                        <th style="text-align: center; width: 10%;" (click)="toggleSelect()">Select</th>
+                        <th style="text-align: center; width: 10%;" (click)="toggleSelect(0)">Select</th>
                         <th style="text-align: center; width: 10%;">Status</th>
                         <th style="text-align: center; width: 30%;">Message</th>
                     </tr>
-                </thead>
+                </thead>                
                  <tbody>
                     <tr *ngFor="let maprow of TallyData.MastersStageData; let i = index">
                         <div *ngIf="selectedMasterType == 'All' || maprow.MasterType == selectedMasterType" >
@@ -56,15 +57,49 @@
                     </tr>
                 </tbody>                
             </table>
-
             <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 0">
                 <button (click)="ExportMasterstoTally()">Export to Tally</button>&nbsp;&nbsp;
             </div>
+        </div>
+        <div *ngIf="TallyData.ExportImport == 1">
+            <div  class="table-title" style="margin-bottom: 10px; text-align: center;">List of Masters from Tally</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="text-align: center; width: 15%; ">Master Type</th>
+                        <th style="text-align: center; width: 19%;">Master Name</th>
+                        <th style="text-align: center; width: 10%;">Action</th>
+                        <th style="text-align: center; width: 10%;" (click)="toggleSelect(1)">Select</th>
+                        <th style="text-align: center; width: 10%;">Status</th>
+                        <th style="text-align: center; width: 30%;">Message</th>
+                    </tr>
+                </thead>                
+                <tbody>
+                    <tr *ngFor="let maprow of TallyData.TallyMastersStageData; let i = index">
+                        <div *ngIf="selectedMasterType == 'All' || maprow.MasterType == selectedMasterType" >
+                            <td class="filterable-cell" style="width: 15%;" >{{maprow.MasterType}}</td>
+                            <td class="filterable-cell" style="width: 20%;">{{maprow.MasterName}}</td>
+                            <td class="filterable-cell" style="width: 10%;">
+                                    <select [(ngModel)]="maprow.Action" >
+                                        <option *ngFor="let ActionName of ActionList" name="ActionName" [value]="ActionName"   >
+                                            {{ActionName}}
+                                        </option>
+                                    </select>                    
+                            </td>
+                            <td class="filterable-cell" style="width: 10%; text-align: center;"><input type="checkbox" [checked]="maprow.isSelected" (change)="maprow.isSelected = !maprow.isSelected"/></td>
+                            <td class="filterable-cell" style="width: 10%;">:{{maprow.Status}} </td>
+                            <td class="filterable-cell" style="width: 30%;">:{{maprow.Message}} </td>
+                        </div>
+                    </tr>
+                </tbody>                
+            </table>
+
             <div style="padding-top: 20px; padding-right: 30px; text-align: right;" *ngIf="TallyData.ExportImport == 1">
                 <button (click)="SaveMasterstoFrono()">Save to Frono</button>&nbsp;&nbsp;
             </div>
         </div>
-    <div class="panel" id="two-panel">
+    </div>
+    <div  class="panel" id="two-panel" >
         <div class="panel-title" style="margin-bottom: 10px;">Import Transactions Data</div>
 
         <div style="padding: 5px;">
@@ -119,5 +154,5 @@
             <button >Save to Frono</button>&nbsp;&nbsp;
         </div>
     </div>
-  </div>
+
 </div>

@@ -118,10 +118,14 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.GROUP)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.GROUP ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.GROUP)
+          }
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.GROUP }
-          //console.log(rtnVal);
           observer.next(rtnVal)
         }
       },
@@ -218,7 +222,13 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.LEDGER)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.LEDGER ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.LEDGER)
+          }
+          //const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.LEDGER)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
 //          const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.LEDGER }
           observer.next(rtnVal)
@@ -316,7 +326,14 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.UNIT)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.UNIT ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.UNIT)
+          }
+
+          //const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.UNIT)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           // const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.UNIT }
           observer.next(rtnVal)
@@ -413,7 +430,13 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.GODOWN)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.GODOWN ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.GODOWN)
+          }
+          //const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.GODOWN)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.GODOWN }
           observer.next(rtnVal)
@@ -511,7 +534,14 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCENTRE)
+          //console.log(jObj)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCENTRE ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCENTRE)
+          }
+          
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCENTRE }
           //console.log(rtnVal);
@@ -610,7 +640,13 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCATEGORY)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCATEGORY ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCATEGORY)
+          }
+          //const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCATEGORY)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.COSTCATEGORY }
           //console.log(rtnVal);
@@ -709,7 +745,14 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKGROUP)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKGROUP ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKGROUP)
+          }
+
+          // const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKGROUP)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           observer.next(rtnVal)
         }
@@ -814,7 +857,13 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKCATEGORY)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKCATEGORY ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKCATEGORY)
+          }
+          //const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKCATEGORY)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKCATEGORY  }
           //console.log(rtnVal);
@@ -912,7 +961,13 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKITEM)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKITEM ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKITEM)
+          }
+          // const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKITEM)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.STOCKITEM }
           //console.log(rtnVal);
@@ -1009,7 +1064,14 @@ export class TallyIntService {
           const rtnVal = { Error : true, Message : jObj.ENVELOPE.BODY.DATA.LINEERROR, data : "" }
           observer.next(rtnVal)
         } else {
-          const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.VOUCHERTYPE)
+          let finalVal = []
+          if(!jObj.ENVELOPE.BODY.DATA.COLLECTION.VOUCHERTYPE ) {
+            finalVal = []
+          } else {
+            finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.VOUCHERTYPE)
+          }
+
+          //const finalVal = this.SingleTagAsArray(jObj.ENVELOPE.BODY.DATA.COLLECTION.VOUCHERTYPE)
           const rtnVal = { Error : false, Message : "Data retrived" , data : finalVal  }
           //const rtnVal = { Error : false, Message : "Data retrived" , data : jObj.ENVELOPE.BODY.DATA.COLLECTION.VOUCHERTYPE }
           //console.log(rtnVal);

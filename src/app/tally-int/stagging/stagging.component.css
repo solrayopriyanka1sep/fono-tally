@@ -64,6 +64,10 @@ h2{
 }
 
 
+.table-title{
+  font-size:1.2em;
+  font-weight:bold
+}
 /*
 table {
   font-family: arial, sans-serif;

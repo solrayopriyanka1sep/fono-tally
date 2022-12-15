@@ -43,6 +43,7 @@ export class TallyDataService {
     vouchersFromDate:Date = new Date()
     vouchersToDate:Date = new Date()
 
+    TallyMastersStageData:any[] = []
     MastersStageData:any[] = []
     TransactionsStageData:any[] = []
 
@@ -91,6 +92,8 @@ export class TallyDataService {
             }                
         })
 
+        //console.log("Tally Data started")
+        
 
 
         if(this.ConfigOptions.ledgerMasters) {
@@ -109,7 +112,7 @@ export class TallyDataService {
                         mData.Status = ""
                         mData.Message = "" 
 //                        {MasterType : 'Ledger Groups', MasterName : Item.GROUPNAME, isSelected: false, Action : 'Create', Status : "", Message: "", Parent : ""  }
-                        this.MastersStageData.push(mData)
+                        this.TallyMastersStageData.push(mData)
                     });
                 },
                 error: error => {
@@ -122,7 +125,7 @@ export class TallyDataService {
                     this.TallyLedgerData = res.data
                     //console.log(this.TallyLedgerData)
                     this.TallyLedgerData.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Ledgers', MasterName : Item.LEDGERNAME, isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Ledgers', MasterName : Item.LEDGERNAME, isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });
                 },
                 error: error => this.TallyLedgerData = [] 
@@ -131,10 +134,11 @@ export class TallyDataService {
 
         if(this.ConfigOptions.stockMasters) {       
             this.TallyAPI.GetTallyUOM.subscribe({
-                next: (res:any) => {
+                next: (res:any) => {                        
                         this.TallyUOMsData = res.data 
+                        console.log(this.TallyUOMsData)
                         this.TallyUOMsData.forEach((Item) => {
-                            this.MastersStageData.push({MasterType : 'Units', MasterName : Item.UNITNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                            this.TallyMastersStageData.push({MasterType : 'Units', MasterName : Item.UNITNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                         });    
                     },
                 error: error => this.TallyUOMsData = [] 
@@ -145,7 +149,7 @@ export class TallyDataService {
                 next: (res:any) => {
                     this.TallyStockGroupsData = res.data 
                     this.TallyStockGroupsData.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Stock Groups', MasterName : Item.STOCKGROUPNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Stock Groups', MasterName : Item.STOCKGROUPNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });    
                 },
                 error: error => this.TallyStockGroupsData = [] 
@@ -155,7 +159,7 @@ export class TallyDataService {
                 next: (res:any) => {
                     this.TallyStockCategories = res.data 
                     this.TallyStockCategories.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Stock Categories', MasterName : Item.STOCKCATEGORYNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Stock Categories', MasterName : Item.STOCKCATEGORYNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });
                 },
                 error: error => this.TallyStockCategories = [] 
@@ -165,11 +169,13 @@ export class TallyDataService {
                 next: (res:any) => {
                     this.TallyStockItemsData = res.data 
                     this.TallyStockItemsData.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Stock Items', MasterName : Item.STOCKNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Stock Items', MasterName : Item.STOCKNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });
                 },
                 error: error => this.TallyStockItemsData = [] 
             })
+
+
         }
     
         if(this.ConfigOptions.costCenters) {       
@@ -177,7 +183,7 @@ export class TallyDataService {
                 next: (res:any) => {
                     this.TallyCostCenters = res.data
                     this.TallyCostCenters.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Cost Centers', MasterName : Item.COSTCENTERNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Cost Centers', MasterName : Item.COSTCENTERNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });
                 },
                 error: error => this.TallyCostCenters = [] 
@@ -189,7 +195,7 @@ export class TallyDataService {
                 next: (res:any) => {
                     this.TallyCostCategories = res.data
                     this.TallyCostCategories.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Cost Categories', MasterName : Item.COSTCATEGORYNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Cost Categories', MasterName : Item.COSTCATEGORYNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });
                 },
                 error: error => this.TallyCostCategories = [] 
@@ -201,12 +207,14 @@ export class TallyDataService {
                 next: (res:any) => {
                     this.TallyLocations = res.data 
                     this.TallyLocations.forEach((Item) => {
-                        this.MastersStageData.push({MasterType : 'Locations', MasterName : Item.LOCATIONNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                        this.TallyMastersStageData.push({MasterType : 'Locations', MasterName : Item.LOCATIONNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
                     });
                 },
                 error: error => this.TallyLocations = [] 
             })
-        }    
+        }  
+        
+        
     }
 
     public CreateVoucher(){

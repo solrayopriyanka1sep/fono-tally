@@ -52,9 +52,9 @@ export class StaggingComponent implements OnInit {
     //console.log(this.TallyData.ExportImport)
 
     this.TallyData.MastersStageData  = []
+    //this.TallyData.TallyMastersStageData =[]
     //Collect frono data to be exported to Tally
     if(this.TallyData.ExportImport == 0){
-
       this.FronoAPI.getUOM().subscribe({
         next: (res:any) => {
             if(res.messageText == "") {
@@ -312,12 +312,135 @@ export class StaggingComponent implements OnInit {
           }                
       })          
     
-     this.TallyDataSrv.vouchersFromDate.setDate(this.TallyDataSrv.vouchersToDate.getDate() - 30) 
-     this.mFromDt = this.datePipe.transform(this.TallyDataSrv.vouchersFromDate, 'yyyy-MM-dd');
-     this.mToDt = this.datePipe.transform(this.TallyDataSrv.vouchersToDate, 'yyyy-MM-dd');
-     
+      this.TallyDataSrv.vouchersFromDate.setDate(this.TallyDataSrv.vouchersToDate.getDate() - 30) 
+      this.mFromDt = this.datePipe.transform(this.TallyDataSrv.vouchersFromDate, 'yyyy-MM-dd');
+      this.mToDt = this.datePipe.transform(this.TallyDataSrv.vouchersToDate, 'yyyy-MM-dd');     
+    } else {
+      //TallyMastersStageData
+
+      if(this.TallyData.ConfigOptions.ledgerMasters) {
+        this.TallyAPI.GetTallyGroups.subscribe({
+            next: (res:any) => {
+                this.TallyData.TallyGroupsData = res.data               
+                this.TallyData.TallyGroupsData.forEach((Item) => {
+                    let mData = new MastersStageData()
+                    mData.FronoCompanyId =this.TallyData.FronoCompanyNumber
+                    mData.MasterType = 'Ledger Groups'
+                    mData.MasterName = Item.GROUPNAME
+                    mData.ParentId = 0
+                    mData.ParentName = Item.Parent
+                    mData.isSelected = false
+                    mData.Action = 'Create' 
+                    mData.Status = ""
+                    mData.Message = "" 
+//                        {MasterType : 'Ledger Groups', MasterName : Item.GROUPNAME, isSelected: false, Action : 'Create', Status : "", Message: "", Parent : ""  }
+                    this.TallyData.TallyMastersStageData.push(mData)
+                });
+            },
+            error: error => {
+                this.TallyData.TallyGroupsData = []
+            }                
+        })
+    
+        this.TallyAPI.GetTallyLedger.subscribe({
+            next: (res:any) => {
+                this.TallyData.TallyLedgerData = res.data
+                //console.log(this.TallyLedgerData)
+                this.TallyData.TallyLedgerData.forEach((Item) => {
+                    this.TallyData.TallyMastersStageData.push({MasterType : 'Ledgers', MasterName : Item.LEDGERNAME, isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                });
+            },
+            error: error => this.TallyData.TallyLedgerData = [] 
+        })
+      }
+
+      if(this.TallyData.ConfigOptions.stockMasters) {       
+          this.TallyAPI.GetTallyUOM.subscribe({
+              next: (res:any) => {                        
+                      this.TallyData.TallyUOMsData = res.data 
+                      this.TallyData.TallyUOMsData.forEach((Item) => {
+                          this.TallyData.TallyMastersStageData.push({MasterType : 'Units', MasterName : Item.UNITNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                      });    
+                  },
+              error: error => this.TallyData.TallyUOMsData = [] 
+          })
+
+
+          this.TallyAPI.GetTallyStockGroups.subscribe({
+              next: (res:any) => {
+                  this.TallyData.TallyStockGroupsData = res.data 
+                  this.TallyData.TallyStockGroupsData.forEach((Item) => {
+                      this.TallyData.TallyMastersStageData.push({MasterType : 'Stock Groups', MasterName : Item.STOCKGROUPNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                  });    
+              },
+              error: error => this.TallyData.TallyStockGroupsData = [] 
+          })
+
+          this.TallyAPI.GetTallyStockCategories.subscribe({
+              next: (res:any) => {
+                  this.TallyData.TallyStockCategories = res.data 
+                  this.TallyData.TallyStockCategories.forEach((Item) => {
+                      this.TallyData.TallyMastersStageData.push({MasterType : 'Stock Categories', MasterName : Item.STOCKCATEGORYNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                  });
+              },
+              error: error => this.TallyData.TallyStockCategories = [] 
+          })
+
+          this.TallyAPI.GetTallyStockItem.subscribe({
+              next: (res:any) => {
+                  this.TallyData.TallyStockItemsData = res.data 
+                  this.TallyData.TallyStockItemsData.forEach((Item) => {
+                      this.TallyData.TallyMastersStageData.push({MasterType : 'Stock Items', MasterName : Item.STOCKNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                  });
+              },
+              error: error => this.TallyData.TallyStockItemsData = [] 
+          })
+
+      }
+
+      if(this.TallyData.ConfigOptions.costCenters) {       
+          this.TallyAPI.GetTallyCostCenters.subscribe({
+              next: (res:any) => {
+                  this.TallyData.TallyCostCenters = res.data
+                  this.TallyData.TallyCostCenters.forEach((Item) => {
+                      this.TallyData.TallyMastersStageData.push({MasterType : 'Cost Centers', MasterName : Item.COSTCENTERNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                  });
+              },
+              error: error => this.TallyData.TallyCostCenters = [] 
+          })
+      }
+
+      if(this.TallyData.ConfigOptions.costCategories) {       
+          this.TallyAPI.GetTallyCostCategory.subscribe({
+              next: (res:any) => {
+                  this.TallyData.TallyCostCategories = res.data
+                  this.TallyData.TallyCostCategories.forEach((Item) => {
+                      this.TallyData.TallyMastersStageData.push({MasterType : 'Cost Categories', MasterName : Item.COSTCATEGORYNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                  });
+              },
+              error: error => this.TallyData.TallyCostCategories = [] 
+          })
+      }
+
+      if(this.TallyData.ConfigOptions.locations) {       
+          this.TallyAPI.GetTallyLocations.subscribe({
+              next: (res:any) => {
+                  this.TallyData.TallyLocations = res.data 
+                  this.TallyData.TallyLocations.forEach((Item) => {
+                      this.TallyData.TallyMastersStageData.push({MasterType : 'Locations', MasterName : Item.LOCATIONNAME , isSelected: false, Action : 'Create', Status : "", Message: ""  })
+                  });
+              },
+              error: error => this.TallyData.TallyLocations = [] 
+          })
+      }  
+  
+
 
     }
+
+
+
+
   }
 
   getFronoVoucherstoExport(){
@@ -927,6 +1050,37 @@ export class StaggingComponent implements OnInit {
     const SaleTDSLedger = SaleTDSLedInfo.length > 0  ? SaleTDSLedInfo[0].tallyLedgerName : "TDS"
 
 
+    const CNDistLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Credit Note" && el.transactionType == "Discount" )
+    const CNDiscountLedger = CNDistLedInfo.length > 0 ? CNDistLedInfo[0].tallyLedgerName : "Discount Given"
+
+    const CNRoundOffLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Credit Note" && el.transactionType == "Round Off" )
+    const CNRoundOffLedger = CNRoundOffLedInfo.length > 0 ? CNRoundOffLedInfo[0].tallyLedgerName : "RoundOff"
+
+    const CNTDSLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Credit Note" && el.transactionType == "TDS" )
+    const CNTDSLedger = CNTDSLedInfo.length > 0  ? CNTDSLedInfo[0].tallyLedgerName : "TDS"
+
+
+    const PurchaseDistLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Purchase" && el.transactionType == "Discount" )
+    const PurchaseDiscountLedger = PurchaseDistLedInfo.length > 0 ? PurchaseDistLedInfo[0].tallyLedgerName : "Discount Allowed"
+
+    const PurchaseRoundOffLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Purchase" && el.transactionType == "Round Off" )
+    const PurchaseRoundOffLedger = PurchaseRoundOffLedInfo.length > 0 ? PurchaseRoundOffLedInfo[0].tallyLedgerName : "RoundOff"
+
+    const PurchaseTDSLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Purchase" && el.transactionType == "TDS" )
+    const PurchaseTDSLedger = PurchaseTDSLedInfo.length > 0  ? PurchaseTDSLedInfo[0].tallyLedgerName : "TDS"
+
+
+    const DNDistLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Debit Note" && el.transactionType == "Discount" )
+    const DNDiscountLedger = DNDistLedInfo.length > 0 ? DNDistLedInfo[0].tallyLedgerName : "Discount Allowed"
+
+    const DNRoundOffLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Debit Note" && el.transactionType == "Round Off" )
+    const DNRoundOffLedger = DNRoundOffLedInfo.length > 0 ? DNRoundOffLedInfo[0].tallyLedgerName : "RoundOff"
+
+    const DNTDSLedInfo:any[] = this.TallyData.mappingData.filter(el => el.fronoCompanyId == this.TallyData.FronoCompanyNumber && el.voucherType == "Debit Note" && el.transactionType == "TDS" )
+    const DNTDSLedger = DNTDSLedInfo.length > 0  ? DNTDSLedInfo[0].tallyLedgerName : "TDS"
+
+
+
     for (const VchDataRow of this.TallyData.TransactionsStageData) {
 //      console.log(VchDataRow)
       if (VchDataRow.isSelected && VchDataRow.VoucherType == "Sales"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
@@ -1010,6 +1164,88 @@ export class StaggingComponent implements OnInit {
             },
         })      
       }
+
+      //Pending
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Purchase"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+        this.FronoAPI.getSingleSalesVoucherData(VchDataRow.VoucherNumber).subscribe({
+        next: (res:any) => {
+           if(res.messageText == "") {
+            let VchData:VoucherData  = new VoucherData()
+            VchData.Action = "Create"
+            VchData.VoucherTypeName = "Purchase"
+//              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+
+            //Temp change date to 1st of Dec 2021  
+            VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+            VchData.VoucherNumber = VchDataRow.VoucherNumber
+            VchData.VoucherRef = VchDataRow.VoucherRef             
+            VchData.HeaderLedger = VchDataRow.HeaderLedger
+            VchData.Narration  = "Created from Frono API" 
+            VchData.VoucherInvoiceView ="Invoice Voucher View"
+            VchData.VoucherEntryMode="Item Invoice"
+            VchData.PartyGSTNo = res.data.customerDetails.billingCustomerGSTNumber
+            VchData.DestinationState = res.data.customerDetails.shippingStateName
+            VchData.DestinationCountry = res.data.customerDetails.shippingCountry
+
+    
+            let LedgerEntriesData: LedgerEntry[] = []
+            let InventoryEntriesData: InventoryEntry[] = []
+            for (const itemsRow of res.data.itemDetails) {
+              //itemsRow.isCharge  are actually LedgerEntires
+              //Must come under ledger entries. Frono need to create mapping between those items with Ledgers
+              InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: !itemsRow.unitShortName ? "UNT" : itemsRow.unitShortName , Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.taxableAmount, LedgerName: "Sales Account" })
+            } 
+            VchData.InventoryEntriesData = InventoryEntriesData
+
+
+            if(res.data.invoiceDetails.totalDiscount != 0) {
+              LedgerEntriesData.push({LedgerName : PurchaseDiscountLedger, CashLedger : "", DebitCredit : "DR" , LineAmount : res.data.invoiceDetails.totalDiscount })
+            }
+
+            if(res.data.invoiceDetails.tdsAmount != 0) {
+              LedgerEntriesData.push({LedgerName : PurchaseTDSLedger, CashLedger : "", DebitCredit : "DR" , LineAmount : res.data.invoiceDetails.tdsAmount })
+            }
+
+            for (const taxRow of res.data.taxDetails) {
+              if( taxRow.sgst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Purchase", "State Tax", taxRow.sgstPercent), CashLedger : "", DebitCredit : "CR" , LineAmount : taxRow.sgst })
+              if( taxRow.cgst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Purchase", "Central Tax", taxRow.cgstPercent), CashLedger : "", DebitCredit : "CR" , LineAmount : taxRow.cgst })
+              if( taxRow.igst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Purchase", "Integrated Tax", taxRow.igstPercent), CashLedger : "", DebitCredit : "CR" , LineAmount : taxRow.igst })                
+            } 
+
+            if(res.data.invoiceDetails.roundOff != 0) {
+              LedgerEntriesData.push({LedgerName : PurchaseRoundOffLedger, CashLedger : "", DebitCredit : "DR" , LineAmount : res.data.invoiceDetails.roundOff })
+            }
+            
+            VchData.LedgerEntriesData = LedgerEntriesData
+
+            this.TallyAPI.SaleVoucher(VchData  ).subscribe({
+              next: (response:any) => {
+                  if(response.Error == false) {
+                    VchDataRow.Status = "Success" 
+                    VchDataRow.Message = response.data
+                    //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                  } else {
+                    VchDataRow.Status = "Failed" 
+                    VchDataRow.Message = response.Message
+                  }
+                },
+                error: error => {
+                    console.error( error);
+                    VchDataRow.Status = "Failed" 
+                    VchDataRow.Message = error.messageText
+                },
+            })            
+          }
+        },
+          error: error => {
+              console.error( error);
+              VchDataRow.Status = "Failed" 
+              VchDataRow.Message = error.messageText
+          },
+      })      
+      }
+
 
       if (VchDataRow.isSelected && VchDataRow.VoucherType == "Journal"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
         this.FronoAPI.getSingleJournalData(VchDataRow.VoucherNumber).subscribe({
@@ -1125,6 +1361,65 @@ export class StaggingComponent implements OnInit {
         })      
       }
 
+      //Pending
+      if (VchDataRow.isSelected && VchDataRow.VoucherType == "Payment"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
+        this.FronoAPI.getSingleReceiptData(VchDataRow.VoucherNumber).subscribe({
+          next: (res:any) => {
+            if(res.messageText == "") {
+              let VchData:VoucherData  = new VoucherData()
+              VchData.Action = "Create"
+              VchData.VoucherTypeName = "Receipt"
+  //              VchData.VoucherDate = this.FronoAPI.stringToDate(VchDataRow.VoucherDate)
+              //Temp change date to 1st of Dec 2021  
+              VchData.VoucherDate = this.FronoAPI.stringToDate("2021-12-01")
+
+              VchData.VoucherNumber = VchDataRow.VoucherNumber
+              VchData.VoucherRef = VchDataRow.VoucherRef
+              VchData.VoucherRefDate = VchDataRow.VoucherRefDate
+              VchData.Narration  = "Created from Frono API" 
+      
+              let LedgerEntriesData: LedgerEntry[] = []
+  //            let InventoryEntriesData: InventoryEntry[] = []           
+              for (const itemsRow of res.data) {
+                //let ledInfo:any[] = this.TallyData.MastersStageData.filter( (el:any) => el.MasterType == "Ledgers" && el.Id == itemsRow.ledgerAccountId )                
+                LedgerEntriesData.push({    
+                  LedgerName :  VchDataRow.PartyLedger,
+                  CashLedger  : "" ,
+                  DebitCredit : "DR",
+                  LineAmount  : itemsRow.collectionAmount ,
+                  BillRef : itemsRow.invoiceNumber
+                })
+              } 
+              VchData.LedgerEntriesData = LedgerEntriesData
+
+              this.TallyAPI.ReceiptVoucher(VchData ).subscribe({
+                next: (response:any) => {
+                    if(response.Error == false) {
+                      VchDataRow.Status = "Success" 
+                      VchDataRow.Message = response.data
+                      //dataRow.Message = "Created " + response.data.CREATED + ", Modified " + res.data.ALTERED
+                    } else {
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = response.Message
+                    }
+                  },
+                  error: error => {
+                      console.error( error);
+                      VchDataRow.Status = "Failed" 
+                      VchDataRow.Message = error.messageText
+                  },
+              })            
+            }
+          },
+          error: error => {
+              console.error( error);
+              VchDataRow.Status = "Failed" 
+              VchDataRow.Message = error.messageText
+          },
+        })      
+      }
+
+
       if (VchDataRow.isSelected && VchDataRow.VoucherType == "Credit Note"  && (VchDataRow.Action == "Create" || VchDataRow.Action == "Modify" )  ) {         
         this.FronoAPI.getSingleCreditNoteData(VchDataRow.VoucherNumber).subscribe({
         next: (res:any) => {
@@ -1146,9 +1441,35 @@ export class StaggingComponent implements OnInit {
             let LedgerEntriesData: LedgerEntry[] = []
             let InventoryEntriesData: InventoryEntry[] = []
             for (const itemsRow of res.data.itemDetails) {
-              InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: itemsRow.accountName })
-            } 
+              //itemsRow.isCharge  are actually LedgerEntires
+              if(itemsRow.isCharge ) {
+                LedgerEntriesData.push({LedgerName : itemsRow.accountName, CashLedger : "", DebitCredit : "CR" , LineAmount : itemsRow.amount })
+              } else {
+                InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: itemsRow.accountName })
+              }
+            }             
             VchData.InventoryEntriesData = InventoryEntriesData
+
+            if(res.data.invoiceDetails.totalDiscount != 0) {
+              LedgerEntriesData.push({LedgerName : CNDiscountLedger, CashLedger : "", DebitCredit : "DR" , LineAmount : res.data.invoiceDetails.totalDiscount })
+            }
+
+            if(res.data.invoiceDetails.tdsAmount != 0) {
+              LedgerEntriesData.push({LedgerName : CNTDSLedger, CashLedger : "", DebitCredit : "DR" , LineAmount : res.data.invoiceDetails.tdsAmount })
+            }
+
+            for (const taxRow of res.data.taxDetails) {
+              if( taxRow.sgst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Credit Note", "State Tax", taxRow.sgstPercent), CashLedger : "", DebitCredit : "CR" , LineAmount : taxRow.sgst })
+              if( taxRow.cgst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Credit Note", "Central Tax", taxRow.cgstPercent), CashLedger : "", DebitCredit : "CR" , LineAmount : taxRow.cgst })
+              if( taxRow.igst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Credit Note", "Integrated Tax", taxRow.igstPercent), CashLedger : "", DebitCredit : "CR" , LineAmount : taxRow.igst })                
+            } 
+
+            if(res.data.invoiceDetails.roundOff != 0) {
+              LedgerEntriesData.push({LedgerName : CNRoundOffLedger, CashLedger : "", DebitCredit : "DR" , LineAmount : res.data.invoiceDetails.roundOff })
+            }
+            
+            VchData.LedgerEntriesData = LedgerEntriesData
+
             this.TallyAPI.CreditNoteVoucher(VchData  ).subscribe({
               next: (response:any) => {
                   console.log(response)
@@ -1198,9 +1519,35 @@ export class StaggingComponent implements OnInit {
             let LedgerEntriesData: LedgerEntry[] = []
             let InventoryEntriesData: InventoryEntry[] = []
             for (const itemsRow of res.data.itemDetails) {
-              InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: itemsRow.accountName })
+              if(itemsRow.isCharge ) {
+                LedgerEntriesData.push({LedgerName : itemsRow.accountName, CashLedger : "", DebitCredit : "DR" , LineAmount : itemsRow.amount })
+              } else {
+                InventoryEntriesData.push({StockName : itemsRow.itemName, UOM: itemsRow.unitShortName, Qty : itemsRow.qty, Rate: itemsRow.rate, LineAmount: itemsRow.amount, LedgerName: itemsRow.accountName })
+              }
             } 
             VchData.InventoryEntriesData = InventoryEntriesData
+
+            if(res.data.invoiceDetails.totalDiscount != 0) {
+              LedgerEntriesData.push({LedgerName : DNDiscountLedger, CashLedger : "", DebitCredit : "CR" , LineAmount : res.data.invoiceDetails.totalDiscount })
+            }
+
+            if(res.data.invoiceDetails.tdsAmount != 0) {
+              LedgerEntriesData.push({LedgerName : DNTDSLedger, CashLedger : "", DebitCredit : "CR" , LineAmount : res.data.invoiceDetails.tdsAmount })
+            }
+
+            for (const taxRow of res.data.taxDetails) {
+              if( taxRow.sgst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Debit Note", "State Tax", taxRow.sgstPercent), CashLedger : "", DebitCredit : "DR" , LineAmount : taxRow.sgst })
+              if( taxRow.cgst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Debit Note", "Central Tax", taxRow.cgstPercent), CashLedger : "", DebitCredit : "DR" , LineAmount : taxRow.cgst })
+              if( taxRow.igst != 0)  LedgerEntriesData.push({LedgerName : this.GetGSTLedgerName("Debit Note", "Integrated Tax", taxRow.igstPercent), CashLedger : "", DebitCredit : "DR" , LineAmount : taxRow.igst })                
+            } 
+
+            if(res.data.invoiceDetails.roundOff != 0) {
+              LedgerEntriesData.push({LedgerName : DNRoundOffLedger, CashLedger : "", DebitCredit : "CR" , LineAmount : res.data.invoiceDetails.roundOff })
+            }
+            
+            VchData.LedgerEntriesData = LedgerEntriesData
+
+
             this.TallyAPI.DebitNoteVoucher(VchData  ).subscribe({
               next: (response:any) => {
                   console.log(response)
@@ -1234,11 +1581,20 @@ export class StaggingComponent implements OnInit {
   }
 
 
-  toggleSelect(){
-    if(this.selectedMasterType == "All") {
-      this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected )
+  toggleSelect(ExportType:number){
+    if(ExportType == 0) {
+      if(this.selectedMasterType == "All") {
+        this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected )
+      } else {
+        this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected && item.MasterType == this.selectedMasterType)
+      } 
     } else {
-      this.TallyData.MastersStageData.forEach(item => item.isSelected = !item.isSelected && item.MasterType == this.selectedMasterType)
+      if(this.selectedMasterType == "All") {
+        this.TallyData.TallyMastersStageData.forEach(item => item.isSelected = !item.isSelected )
+      } else {
+        this.TallyData.TallyMastersStageData.forEach(item => item.isSelected = !item.isSelected && item.MasterType == this.selectedMasterType)
+      } 
+
     }
     
   }
